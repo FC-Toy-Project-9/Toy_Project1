@@ -27,7 +27,7 @@ public class JsonUtil {
     /**
      * LocalDateTime Type의 String Format
      */
-    private static String PATTERN_DATETIME = String.format("%s %s", PATTERN_DATE, PATTERN_TIME);
+    private static String PATTERN_DATETIME = String.format("%s'T'%s", PATTERN_DATE, PATTERN_TIME);
 
     /**
      * 인스턴스 하나를 생성 해 놓고 필요할 때마다 사용하는 것이 편리하여 static final로 선언.

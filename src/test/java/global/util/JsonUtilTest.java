@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 /**
@@ -150,6 +151,28 @@ class JsonUtilTest {
         Assertions.assertEquals(LocalDate.of(2023,7,20), testTrip.getEndDate());
     }
 
+    /**
+     * TC6: LocalDateTime일 경우 'T'가 포함된 문자열을 제대로 파싱하는지 확인.
+     * public static <T> T fromJson(BufferedReader reader, Class<T> classOfT)
+     */
+    @Test
+    void fromJsonTC6() {
+        String jsonStr = "{\n"
+            + "\"trip_id\": 1,\n"
+            + "\"trip_name\": \"Family Vacation\",\n"
+            + "\"start_date\": \"2023-07-15\",\n"
+            + "\"time\": \"2023-07-15T08:00:00\",\n"
+            + "\"end_date\": \"2023-07-20\"}";
+        BufferedReader bufferedReader = new BufferedReader(new StringReader(jsonStr));
+
+        TestTrip testTrip = JsonUtil.fromJson(bufferedReader,TestTrip.class);
+
+        Assertions.assertEquals(
+            LocalDateTime.of(2023, 7, 15, 8, 0,0),
+            testTrip.getTime());
+
+    }
+
 
     /**
      * 테스트를 위해 임의로 만든 테스트 클래스
@@ -163,6 +186,9 @@ class JsonUtilTest {
         private LocalDate startDate;
         @SerializedName("end_date")
         private LocalDate endDate;
+
+        @SerializedName("time")
+        private LocalDateTime time;
 
         public TestTrip(Long tripId, String tripName, LocalDate startDate, LocalDate endDate) {
             this.tripId = tripId;
@@ -187,13 +213,18 @@ class JsonUtilTest {
             return endDate;
         }
 
+        public LocalDateTime getTime() {
+            return time;
+        }
+
         @Override
         public String toString() {
             return "TestTrip{" +
                 "tripId=" + tripId +
                 ", tripName='" + tripName + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", time=" + time +
                 '}';
         }
     }
