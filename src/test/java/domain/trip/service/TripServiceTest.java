@@ -121,7 +121,7 @@ public class TripServiceTest {
 
         @Test
         @DisplayName("해달 여핼 기록이 없으면 여행 기록을 삭제할 수 없다.")
-        void TripFileNotFound_willFail() {
+        void tripFileNotFound_willFail() {
             // given, when
             boolean result = tripService.deleteTripFromJson(1);
 
