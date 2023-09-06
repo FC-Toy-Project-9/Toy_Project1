@@ -23,7 +23,6 @@ public class TripService {
      */
     public List<TripDTO> getTripListFromJson() {
         List<TripDTO> tripList = new ArrayList<>();
-        BufferedReader br = null;
         File[] files = new File(JSONPATH).listFiles();
         if (files == null) {
             throw new TripFileNotFoundException();
@@ -32,20 +31,11 @@ public class TripService {
             if (!file.isFile() || !file.canRead()) {
                 continue;
             }
-            try {
-                br = new BufferedReader(new FileReader(file));
+            try (BufferedReader br = new BufferedReader(new FileReader(file));) {
                 TripDTO trip = JsonUtil.fromJson(br, TripDTO.class);
                 tripList.add(trip);
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (br != null) {
-                        br.close();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         }
         return tripList;
@@ -59,24 +49,14 @@ public class TripService {
      */
     public TripDTO getTripFromJson(int id) {
         TripDTO trip = null;
-        BufferedReader br = null;
         File file = new File(JSONPATH + "/trip_" + id + ".json");
         if (!file.isFile() || !file.canRead()) {
             throw new TripFileNotFoundException();
         }
-        try {
-            br = new BufferedReader(new FileReader(file));
+        try (BufferedReader br = new BufferedReader(new FileReader(file));) {
             trip = JsonUtil.fromJson(br, TripDTO.class);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         if (trip == null) {
             throw new TripFileNotFoundException();
