@@ -21,16 +21,12 @@ public class ItineraryDTO {
     @SerializedName("destination")
     private String destination;
     @SerializedName("departure_time")
-    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime departureTime;
     @SerializedName("arrival_time")
-    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime arrivalTime;
     @SerializedName("check_in")
-    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime checkIn;
     @SerializedName("check_out")
-    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime checkOut;
 
     @Builder
