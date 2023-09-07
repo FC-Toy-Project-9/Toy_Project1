@@ -4,16 +4,27 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
+import global.util.CsvUtil;
 import global.util.JsonUtil;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,17 +32,19 @@ import java.util.List;
 public class ItineraryService {
 
     private static final String JSONPATH = "src/main/resources/trip/json";
+    private static final String CSVPATH = "src/main/resources/trip/csv";
+    private static final TripService tripService = new TripService();
 
     /**
-     * 특정 여행의 여정을 조회하는 메서드
+     * (json) 특정 여행의 여정을 조회하는 메서드
      *
      * @return 여행 기록 id에 해당하는 json에서 읽어온 TripDTO 객체의 itineraries 필드의 리스트
      * @throws FileNotFoundException
      * @param_id 조회할 특정 여행 trip_id 값
      */
-    public static List<ItineraryDTO> getItineraryListFromTrip(int TripId)
+    public List<ItineraryDTO> getItineraryListFromTrip(int TripId)
         throws FileNotFoundException {
-        TripDTO trip = TripService.getTripFromJson(TripId);
+        TripDTO trip = tripService.getTripFromJson(TripId);
         List<ItineraryDTO> ItineraryList = new ArrayList<>();
         if (trip.getItineraries() != null) {
             File file = new File(JSONPATH + "/trip_" + TripId + ".json");
@@ -56,12 +69,12 @@ public class ItineraryService {
     }
 
     /**
-     * json에서 특정 여정을 삭제하는 메서드
+     * (json) 특정 여정을 삭제하는 메서드
      *
      * @param_id TripId, ItineraryId
      */
-    public static boolean deleteItinerary(int TripId, int ItineraryId) {
-        TripDTO trip = TripService.getTripFromJson(TripId);
+    public boolean deleteItinerary(int TripId, int ItineraryId) {
+        TripDTO trip = tripService.getTripFromJson(TripId);
         for (int i = 0; i < trip.getItineraries().size(); i++) {
 
             if (trip.getItineraries().get(i).getId() == ItineraryId) {
@@ -81,6 +94,8 @@ public class ItineraryService {
 
         return false;
     }
+
+
 
 
 }
