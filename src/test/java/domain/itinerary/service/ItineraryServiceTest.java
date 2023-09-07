@@ -2,15 +2,12 @@ package domain.itinerary.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;

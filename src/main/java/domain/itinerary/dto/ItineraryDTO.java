@@ -1,9 +1,7 @@
 package domain.itinerary.dto;
 
 import com.google.gson.annotations.SerializedName;
-import com.opencsv.bean.CsvDate;
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
