@@ -26,12 +26,26 @@ public class TripService {
 
     private static final String JSONPATH = "src/main/resources/trip/json";
     private static final String CSVPATH = "src/main/resources/trip/csv";
+    
+    /**
+     * 메뉴리스트 1.여행정보등록시 호출되는 메서드
+     * 사용자로부터 정보 입력받아 json파일 및 csv파일에 저장하는 기능 구현
+     */
+    public void postTrip(){
+        //사용자로부터 정보 입력받아 TripDto객체 생성
+        TripDTO tripDTO = createTrip();
+
+        //json파일, csv파일에 저장
+        saveTripToJson(tripDTO);
+        saveTripToCSV(tripDTO);
+    }
+
     /**
      * 사용자로부터 여행정보를 입력받아 TripDTO 객체를 생성하는 메서드
      *
      * @return 입력받은 정보로 구성된 새 TripDTO 객체
      */
-    public TripDTO createTrip(){
+    private TripDTO createTrip(){
         try {
             //여행정보 입력받기
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -92,7 +106,7 @@ public class TripService {
      *
      * @param tripDTO: 저장할 정보를 담은 TripDTO객체
      */
-    public void saveTripToJson(TripDTO tripDTO){
+    private void saveTripToJson(TripDTO tripDTO){
         //TripDTO -> Json으로 변환
         String tripJson = JsonUtil.toJson(tripDTO);
 
@@ -113,8 +127,7 @@ public class TripService {
      * TripDTO객체를 TripCSVDto로 변환 후 CSV파일에 저장하는 메서드
      * @param tripDTO 여행정보를 담은 TripDTO객체 
      */
-
-    public void saveTripToCSV(TripDTO tripDTO){
+    private void saveTripToCSV(TripDTO tripDTO){
         TripCsvDTO tripCsvDTO = new TripCsvDTO(tripDTO.getId(), tripDTO.getName(), tripDTO.getStartDate(), tripDTO.getEndDate());
         String csvFilePath = CSVPATH+"/trip_"+tripDTO.getId()+".csv";
         try(CSVWriter cw = new CSVWriter(new FileWriter(csvFilePath))){
@@ -133,7 +146,7 @@ public class TripService {
      * @param checkDate 검증이 필요한 날짜 문자열
      * @return 날짜가 정해진 형식과 다르거나, 불가능한 숫자가 들어간 경우 false, 올바른 날짜인 경우 true
      */
-    public static boolean checkDateFormat(String checkDate){
+    private static boolean checkDateFormat(String checkDate){
         try{
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             dateFormat.setLenient(false);//허술하게 체크하지 않겠다
@@ -151,7 +164,7 @@ public class TripService {
      * @param endDate 여행 종료 날짜
      * @return 시작 날짜가 종료 날짜보다 작으면 true, 크면 false
      */
-    public static boolean checkDateScope(LocalDate startDate, LocalDate endDate){
+    private boolean checkDateScope(LocalDate startDate, LocalDate endDate){
         int compare = startDate.compareTo(endDate);
         if(compare>0){ //시작날짜 > 종료날짜
             return false;
