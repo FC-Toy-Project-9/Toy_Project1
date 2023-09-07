@@ -28,7 +28,7 @@ public class TripServiceTest {
 
     @Nested
     @DisplayName("getTripListFromJson()는 ")
-    class Context_getTripList {
+    class Context_getTripListFromJson {
 
         @Test
         @DisplayName("전체 여행 기록을 조회할 수 있다.")
@@ -89,8 +89,8 @@ public class TripServiceTest {
     }
 
     @Nested
-    @DisplayName("deleteTrip()은")
-    class Context_deleteTrip {
+    @DisplayName("deleteTripFromJson()은")
+    class Context_deleteTripFromJson {
 
         @Test
         @DisplayName("여행 기록을 삭제할 수 있다.")
@@ -120,10 +120,114 @@ public class TripServiceTest {
         }
 
         @Test
-        @DisplayName("해달 여핼 기록이 없으면 여행 기록을 삭제할 수 없다.")
+        @DisplayName("해달 여행 기록이 없으면 여행 기록을 삭제할 수 없다.")
         void tripFileNotFound_willFail() {
             // given, when
             boolean result = tripService.deleteTripFromJson(1);
+
+            // then
+            Assertions.assertFalse(result);
+        }
+    }
+
+    @Nested
+    @DisplayName("getTripListFromCsv()는 ")
+    class Context_getTripListFromCsv {
+
+        @Test
+        @DisplayName("전체 여행 기록을 조회할 수 있다.")
+        void _willSuccess() {
+            // given
+            List<TripDTO> tripList = new ArrayList<>();
+            tripList.add(TripDTO.builder().name("Family Vacation").build());
+            when(mockTripService.getTripListFromCsv()).thenReturn(tripList);
+
+            // when
+            List<TripDTO> result = mockTripService.getTripListFromCsv();
+
+            //then
+            Assertions.assertEquals(result, tripList);
+        }
+
+        @Test
+        @DisplayName("여행 기록이 없으면 조회할 수 없다.")
+        void tripFileNotFound_willFail() {
+            // given, when
+            when(mockTripService.getTripListFromCsv()).thenThrow(new TripFileNotFoundException());
+
+            // then
+            Throwable exception = assertThrows(TripFileNotFoundException.class, () -> {
+                mockTripService.getTripListFromCsv();
+            });
+            assertEquals("여행 파일을 찾을 수 없습니다.", exception.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("getTripFromCsv()는")
+    class Context_getTripFromCsv {
+
+        @Test
+        @DisplayName("특정 여행 기록을 조회할 수 있다.")
+        void _willSuccess() {
+            // given
+            TripDTO trip = TripDTO.builder().id(1).build();
+            when(mockTripService.getTripFromCsv(1)).thenReturn(trip);
+
+            // when
+            TripDTO result = mockTripService.getTripFromCsv(1);
+
+            // then
+            Assertions.assertEquals(result.getId(), trip.getId());
+        }
+
+        @Test
+        @DisplayName("특정 여행 기록이 없으면 조회할 수 없다.")
+        void tripFileNotFound_willFail() {
+            // given, when, then
+            Throwable exception = assertThrows(TripFileNotFoundException.class, () -> {
+                tripService.getTripFromCsv(2);
+            });
+            assertEquals("여행 파일을 찾을 수 없습니다.", exception.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteTripFromCsv()은")
+    class Context_deleteTripFromCsv {
+
+        @Test
+        @DisplayName("여행 기록을 삭제할 수 있다.")
+        void _willSuccess() {
+            // given
+            // Test 를 위해 삭제할 파일 생성
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter("src/main/resources/trip/csv/trip_1.csv");
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fw != null) {
+                        fw.close();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            // when
+            boolean result = tripService.deleteTripFromCsv(1);
+
+            // then
+            Assertions.assertTrue(result);
+        }
+
+        @Test
+        @DisplayName("해달 여행 기록이 없으면 여행 기록을 삭제할 수 없다.")
+        void tripFileNotFound_willFail() {
+            // given, when
+            boolean result = tripService.deleteTripFromCsv(1);
 
             // then
             Assertions.assertFalse(result);
