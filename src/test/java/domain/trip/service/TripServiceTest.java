@@ -99,7 +99,7 @@ public class TripServiceTest {
             // Test 를 위해 삭제할 파일 생성
             FileWriter fw = null;
             try {
-                fw = new FileWriter("src/main/resources/trip/json/trip_1.json");
+                fw = new FileWriter("./src/main/resources/trip/json/trip_1.json");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
