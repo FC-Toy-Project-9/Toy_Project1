@@ -1,12 +1,9 @@
 package domain.itinerary.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
+import lombok.Data;
 import java.time.LocalDateTime; // 날짜와 시간을 다루기 위한 패키지 추가
 
-@Getter
-@AllArgsConstructor
+@Data
 public class ItineraryDTO {
     private int itineraryId;             // 여정 ID
     private String departurePlace;       // 출발지

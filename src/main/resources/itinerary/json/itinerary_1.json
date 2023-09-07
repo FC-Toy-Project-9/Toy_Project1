@@ -1,0 +1,9 @@
+{
+  "itinerary_id": 0,
+  "departure_place": "서울",
+  "destination": "제주",
+  "departure_time": "2023-09-07T00:00:00",
+  "arrival_time": "2023-09-09T00:00:00",
+  "check_in": "2023-09-07T00:00:00",
+  "check_out": "2023-09-09T00:00:00"
+}

@@ -1,0 +1,9 @@
+{
+  "itinerary_id": 0,
+  "departure_place": "제주",
+  "destination": "제주",
+  "departure_time": "2023-01-01T00:00:00",
+  "arrival_time": "2024-01-02T00:00:00",
+  "check_in": "2023-01-01T00:00:00",
+  "check_out": "2024-01-02T00:00:00"
+}
