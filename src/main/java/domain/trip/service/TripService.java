@@ -95,7 +95,7 @@ public class TripService {
         try {
             //json파일에 저장
             BufferedWriter bw = new BufferedWriter(
-                new FileWriter(JSONPATH + "trip_" + tripDTO.getId()+ ".json")); //파일열기
+                new FileWriter(JSONPATH + "/trip_" + tripDTO.getId()+ ".json")); //파일열기
             bw.write(tripJson); //json문자열 파일에 쓰기
 
             //파일 닫기
