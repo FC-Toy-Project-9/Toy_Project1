@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName;
 import global.dto.TripCsvDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItineraryDTO {
 
     @SerializedName("itinerary_id")

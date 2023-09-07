@@ -2,6 +2,7 @@ package domain.itinerary.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
@@ -25,13 +26,13 @@ public class ItineraryServiceTest {
     ItineraryService itineraryService = new ItineraryService();
 
     @Mock
-    ItineraryService mockItinerarySerivce = new ItineraryService();
+    ItineraryService mockItineraryService = new ItineraryService();
 
     @Mock
     TripService mockTripService = new TripService();
 
     @Nested
-    @DisplayName("getItineraryListFromTrip()은")
+    @DisplayName("getItineraryListFromJson()은")
     class Context_getItineraryListFromTrip {
 
         @Test
@@ -40,10 +41,10 @@ public class ItineraryServiceTest {
             //given
             List<ItineraryDTO> itineraryList = new ArrayList<>();
             itineraryList.add(ItineraryDTO.builder().id(1).build());
-            //when(mockItineraryService.getItineraryListFromTrip(1)).thenReturn(itineraryList);
+            when(mockItineraryService.getItineraryListFromJson(1)).thenReturn(itineraryList);
 
             //when
-            List<ItineraryDTO> result = itineraryService.getItineraryListFromTrip(1);
+            List<ItineraryDTO> result = itineraryService.getItineraryListFromJson(1);
 
             //then
             Assertions.assertEquals(result.get(0).getId(), itineraryList.get(0).getId());
@@ -62,7 +63,7 @@ public class ItineraryServiceTest {
 
 
     @Nested
-    @DisplayName("deleteItinerary()은 ")
+    @DisplayName("deleteItineraryFromJson()은 ")
     class Context_deleteItinerary {
 
         @Test
@@ -75,7 +76,7 @@ public class ItineraryServiceTest {
             TripDTO trip = TripDTO.builder().id(1).itineraries(itineraryList).build();
 
             //when
-            boolean result = itineraryService.deleteItinerary(1, 4);
+            boolean result = itineraryService.deleteItineraryFromJson(1, 4);
 
             //then
             Assertions.assertTrue(result);
