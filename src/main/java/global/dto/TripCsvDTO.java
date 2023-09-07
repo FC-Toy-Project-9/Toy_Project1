@@ -14,43 +14,43 @@ import lombok.NoArgsConstructor;
 public class TripCsvDTO {
 
     @SerializedName("trip_id")
-    private int trip_id;
+    private int tripId;
     @SerializedName("trip_name")
-    private String trip_name;
+    private String tripName;
     @SerializedName("start_date")
-    private LocalDate start_date;
+    private LocalDate startDate;
     @SerializedName("end_date")
-    private LocalDate end_date;
+    private LocalDate endDate;
     @SerializedName("itinerary_id")
-    private int itinerary_id;
+    private int itineraryId;
     @SerializedName("departure")
     private String departure;
     @SerializedName("destination")
     private String destination;
     @SerializedName("departure_time")
-    private LocalDateTime departure_time;
+    private LocalDateTime departureTime;
     @SerializedName("arrival_time")
-    private LocalDateTime arrival_time;
+    private LocalDateTime arrivalTime;
     @SerializedName("check_in")
-    private LocalDateTime check_in;
+    private LocalDateTime checkIn;
     @SerializedName("check_out")
-    private LocalDateTime check_out;
+    private LocalDateTime checkOut;
 
     @Builder
-    public TripCsvDTO(int trip_id, String trip_name, LocalDate start_date, LocalDate end_date,
-        int itinerary_id, String departure, String destination, LocalDateTime departure_time,
-        LocalDateTime arrival_time, LocalDateTime check_in, LocalDateTime check_out) {
-        this.trip_id = trip_id;
-        this.trip_name = trip_name;
-        this.start_date = start_date;
-        this.end_date = end_date;
-        this.itinerary_id = itinerary_id;
+    public TripCsvDTO(int tripId, String tripName, LocalDate startDate, LocalDate endDate,
+        int itineraryId, String departure, String destination, LocalDateTime departureTime,
+        LocalDateTime arrivalTime, LocalDateTime checkIn, LocalDateTime checkOut) {
+        this.tripId = tripId;
+        this.tripName = tripName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.itineraryId = itineraryId;
         this.departure = departure;
         this.destination = destination;
-        this.departure_time = departure_time;
-        this.arrival_time = arrival_time;
-        this.check_in = check_in;
-        this.check_out = check_out;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
     }
 
     /**
@@ -67,8 +67,8 @@ public class TripCsvDTO {
         if (this.destination != null) {
             destination = this.destination;
         }
-        return ItineraryDTO.builder().id(this.itinerary_id).departurePlace(departure)
-            .destination(destination).departureTime(this.departure_time)
-            .arrivalTime(this.arrival_time).checkIn(this.check_in).checkOut(this.check_out).build();
+        return ItineraryDTO.builder().id(this.itineraryId).departurePlace(departure)
+            .destination(destination).departureTime(this.departureTime)
+            .arrivalTime(this.arrivalTime).checkIn(this.checkIn).checkOut(this.checkOut).build();
     }
 }
