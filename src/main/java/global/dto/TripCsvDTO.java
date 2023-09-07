@@ -29,7 +29,7 @@ public class TripCsvDTO {
     @CsvDate("yyyy-MM-dd")
     private LocalDate endDate;
 
-    @CsvBindByName(column = "itinerary_id", required = true)
+    @CsvBindByName(column = "itinerary_id")
     private int itineraryId;
 
     @CsvBindByName(column = "departure")
