@@ -14,13 +14,6 @@ public class InputUtil {
         return scanner.nextLine();
     }
 
-    public static LocalDateTime getInputLocalDateTime(String prompt) {
-        System.out.print(prompt + " (yyyy-MM-dd HH:mm:ss): ");
-        String input = scanner.nextLine();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.parse(input, formatter);
-    }
-
     public static LocalDateTime getInputLocalDate(String prompt) {
         while (true) {
             System.out.print(prompt + " (yyyy-MM-dd): ");
