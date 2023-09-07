@@ -24,22 +24,22 @@ class CsvUtilTest {
     @Nested
     @DisplayName("toCsv()는")
     class toCsv {
+
         @Test
         @DisplayName("객체를 받아서 csv파일로 저장할 수 있다.")
         void ObjectToSave() {
             String csv =
-                "name,age,birth_date,birth_time,birth_date_time\n" +
-                    "John,30,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Jane,25,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Michael,35,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Emily,28,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "David,40,2020-08-07,10:10:10,2020-08-07T10:10:10\n";
-            List<Person> people = CsvUtil.fromCsv(new StringReader(csv), Person.class);
+                "trip_id,trip_name,start_date,end_date,time,datetime\n" +
+                    "1,Family Vacation1,2023-07-15,2023-07-20,08:00:00,2023-07-20T08:00:00\n" +
+                    "2,Family Vacation2,2023-07-16,2023-07-21,09:00:00,2023-07-21T09:00:00\n" +
+                    "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
+                    "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
+            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
             String filePath = "./src/test/java/global/util/a.csv";
 
             try {
                 // CSV 파일 저장
-                CsvUtil.toCsv(people,filePath);
+                CsvUtil.toCsv(people, filePath);
 
                 // 파일이 정상적으로 생성되었는지 확인
                 Assertions.assertTrue(new File(filePath).exists());
@@ -52,147 +52,152 @@ class CsvUtilTest {
     @Nested
     @DisplayName("fromCSV()는")
     class fromCsv {
+
         @Test
         @DisplayName("csv를 파싱 하여 객체로 변환했을 경우 문자열 필드는 null이면 안된다.")
         void stringTypeField_isNotNull() {
             String csv =
-                    "name,age,birth_date,birth_time,birth_date_time\n" +
-                    "John,30,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Jane,25,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Michael,35,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Emily,28,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "David,40,2020-08-07,10:10:10,2020-08-07T10:10:10\n";
+                "trip_id,trip_name,start_date,end_date,time,datetime\n" +
+                    "1,Family Vacation1,2023-07-15,2023-07-20,08:00:00,2023-07-20T08:00:00\n" +
+                    "2,Family Vacation2,2023-07-16,2023-07-21,09:00:00,2023-07-21T09:00:00\n" +
+                    "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
+                    "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<Person> people = CsvUtil.fromCsv(new StringReader(csv), Person.class);
+            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
-            Assertions.assertEquals(true, people.get(0).getName() != null);
+            Assertions.assertEquals(true, people.get(0).getTripName() != null);
         }
 
         @Test
         @DisplayName("csv를 파싱 하여 객체로 변환했을 경우 숫자 필드는 0이면 안된다.")
         void numberTypeField_isNotZero() {
             String csv =
-                    "name,age,birth_date,birth_time,birth_date_time\n" +
-                    "John,30,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Jane,25,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Michael,35,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Emily,28,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "David,40,2020-08-07,10:10:10,2020-08-07T10:10:10\n";
+                "trip_id,trip_name,start_date,end_date,time,datetime\n" +
+                    "1,Family Vacation1,2023-07-15,2023-07-20,08:00:00,2023-07-20T08:00:00\n" +
+                    "2,Family Vacation2,2023-07-16,2023-07-21,09:00:00,2023-07-21T09:00:00\n" +
+                    "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
+                    "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<Person> people = CsvUtil.fromCsv(new StringReader(csv), Person.class);
+            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
-            Assertions.assertEquals(true, people.get(0).getAge() != 0);
+            Assertions.assertEquals(true, people.get(0).getTripId() != 0);
         }
 
         @Test
         @DisplayName("csv를 파싱 하여 객체로 변환했을 경우 LocalDate 타입의 값은 input 값과 동일하다")
         void checkLocalDateTypeField() {
             String csv =
-                    "name,age,birth_date,birth_time,birth_date_time\n" +
-                    "John,30,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Jane,25,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Michael,35,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Emily,28,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "David,40,2020-08-07,10:10:10,2020-08-07T10:10:10\n";
+                "trip_id,trip_name,start_date,end_date,time,datetime\n" +
+                    "1,Family Vacation1,2023-07-15,2023-07-20,08:00:00,2023-07-20T08:00:00\n" +
+                    "2,Family Vacation2,2023-07-16,2023-07-21,09:00:00,2023-07-21T09:00:00\n" +
+                    "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
+                    "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<Person> people = CsvUtil.fromCsv(new StringReader(csv), Person.class);
+            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
             Assertions.assertEquals(
-                LocalDate.of(2020,8,7), people.get(0).getBirthDate());
+                LocalDate.of(2023, 7, 20), people.get(0).getEndDate());
         }
 
         @Test
         @DisplayName("csv를 파싱 하여 객체로 변환했을 경우 LocalTime 타입의 값은 input 값과 동일하다.")
         void checkLocalTimeTypeField() {
             String csv =
-                "name,age,birth_date,birth_time,birth_date_time\n" +
-                    "John,30,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Jane,25,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Michael,35,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Emily,28,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "David,40,2020-08-07,10:10:10,2020-08-07T10:10:10\n";
+                "trip_id,trip_name,start_date,end_date,time,datetime\n" +
+                    "1,Family Vacation1,2023-07-15,2023-07-20,08:00:00,2023-07-20T08:00:00\n" +
+                    "2,Family Vacation2,2023-07-16,2023-07-21,09:00:00,2023-07-21T09:00:00\n" +
+                    "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
+                    "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<Person> people = CsvUtil.fromCsv(new StringReader(csv), Person.class);
+            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
             Assertions.assertEquals(
-                LocalTime.of(10,10,10), people.get(0).getBirthTime());
+                LocalTime.of(8, 0, 0), people.get(0).getTime());
         }
 
         @Test
         @DisplayName("csv를 파싱 하여 객체로 변환했을 경우 LocalDateTime 타입의 값은 input 값과 동일하다.")
         void checkLocalDateTimeTypeField() {
             String csv =
-                "name,age,birth_date,birth_time,birth_date_time\n" +
-                    "John,30,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Jane,25,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Michael,35,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "Emily,28,2020-08-07,10:10:10,2020-08-07T10:10:10\n" +
-                    "David,40,2020-08-07,10:10:10,2020-08-07T10:10:10\n";
+                "trip_id,trip_name,start_date,end_date,time,datetime\n" +
+                    "1,Family Vacation1,2023-07-15,2023-07-20,08:00:00,2023-07-20T08:00:00\n" +
+                    "2,Family Vacation2,2023-07-16,2023-07-21,09:00:00,2023-07-21T09:00:00\n" +
+                    "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
+                    "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<Person> people = CsvUtil.fromCsv(new StringReader(csv), Person.class);
+            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
             Assertions.assertEquals(
-                LocalDateTime.of(2020,8,7,10,10,10),
-                people.get(0).getBirthDateTime());
+                LocalDateTime.of(2023, 7, 20, 8, 0, 0),
+                people.get(0).getDatetime());
         }
     }
 
-    static class Person {
+    public static class TripTestDTO {
 
-        @CsvBindByName(column = "name", required = true)
-        private String name;
-        @CsvBindByName(column = "age", required = true)
-        private int age;
-        @CsvBindByName(column = "birth_date", required = true)
+        @CsvBindByName(column = "trip_id", required = true)
+        private Long tripId;
+        @CsvBindByName(column = "trip_name", required = true)
+        private String tripName;
+        @CsvBindByName(column = "start_date", required = true)
         @CsvDate("yyyy-MM-dd")
-        private LocalDate birthDate;
-        @CsvBindByName(column = "birth_time", required = true)
+        private LocalDate startDate;
+        @CsvBindByName(column = "end_date", required = true)
+        @CsvDate("yyyy-MM-dd")
+        private LocalDate endDate;
+        @CsvBindByName(column = "time", required = true)
         @CsvDate("HH:mm:ss")
-        private LocalTime birthTime;
-        @CsvBindByName(column = "birth_date_time", required = true)
+        private LocalTime time;
+        @CsvBindByName(column = "datetime", required = true)
         @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
-        private LocalDateTime birthDateTime;
+        private LocalDateTime datetime;
 
-        public Person() {
+        public TripTestDTO() {
         }
 
-        public Person(String name, int age, LocalDate birthDate, LocalTime birthTime,
-            LocalDateTime birthDateTime) {
-            this.name = name;
-            this.age = age;
-            this.birthDate = birthDate;
-            this.birthTime = birthTime;
-            this.birthDateTime = birthDateTime;
+        public TripTestDTO(Long tripId, String tripName, LocalDate startDate, LocalDate endDate,
+            LocalTime time, LocalDateTime datetime) {
+            this.tripId = tripId;
+            this.tripName = tripName;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.time = time;
+            this.datetime = datetime;
         }
 
-        public String getName() {
-            return name;
+        public Long getTripId() {
+            return tripId;
         }
 
-        public int getAge() {
-            return age;
+        public String getTripName() {
+            return tripName;
         }
 
-        public LocalDate getBirthDate() {
-            return birthDate;
+        public LocalDate getStartDate() {
+            return startDate;
         }
 
-        public LocalTime getBirthTime() {
-            return birthTime;
+        public LocalDate getEndDate() {
+            return endDate;
         }
 
-        public LocalDateTime getBirthDateTime() {
-            return birthDateTime;
+        public LocalTime getTime() {
+            return time;
+        }
+
+        public LocalDateTime getDatetime() {
+            return datetime;
         }
 
         @Override
         public String toString() {
-            return "Person{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", birthDate=" + birthDate +
-                ", birthTime=" + birthTime +
-                ", birthDateTime=" + birthDateTime +
+            return "TripTestDTO{" +
+                "tripId=" + tripId +
+                ", tripName='" + tripName + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", time=" + time +
+                ", datetime=" + datetime +
                 '}';
         }
     }
