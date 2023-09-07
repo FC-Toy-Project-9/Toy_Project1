@@ -8,6 +8,8 @@ import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
+import global.dto.TripCsvDTO;
+import global.util.FileUtil;
 import global.util.JsonUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +25,7 @@ public class ItineraryService {
     private static final String JSONPATH = "src/main/resources/trip/json";
     private static final String CSVPATH = "src/main/resources/trip/csv";
     private static final TripService tripService = new TripService();
+    private static final FileUtil fileUtil = new FileUtil();
 
     /**
      * (json) 특정 여행의 여정을 조회하는 메서드
@@ -84,7 +87,26 @@ public class ItineraryService {
         return false;
     }
 
+    /**
+     * (csv) 특정 여행의 여정을 조회하는 메서드
+     *
+     * @param
+     * @throws FileNotFoundException
+     * @throws
+     */
 
+    public List<ItineraryDTO> getItineraryListFromTripCSV(int TripId) throws FileNotFoundException {
+        List<ItineraryDTO> ItineraryList = new ArrayList<>();
+        String path = CSVPATH + "/trip_" + TripId + ".csv";
+        List<TripCsvDTO> tripCsvList = fileUtil.readCsvFile(path);
+        for (TripCsvDTO tripCsv : tripCsvList) {
+            ItineraryDTO itinerary = tripCsv.toItineraryDTO();
+            ItineraryList.add(itinerary);
+        }
+        return ItineraryList;
+
+
+    }
 
 
 }
