@@ -33,4 +33,10 @@ public class TripDTO {
         this.endDate = endDate;
         this.itineraries = itineraries;
     }
+
+    @Override
+    public String toString() {
+        return "TripDTO{" + "id=" + id + ", name='" + name + '\'' + ", startDate=" + startDate
+            + ", endDate=" + endDate + ", itineraries=" + itineraries + '}';
+    }
 }
