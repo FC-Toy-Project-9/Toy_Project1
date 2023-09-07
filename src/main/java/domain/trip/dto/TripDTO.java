@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class TripDTO {
 
     @SerializedName("trip_id")
-    private int id;
+    private int tripId;
     @SerializedName("trip_name")
     private String name;
     @SerializedName("start_date")
@@ -28,7 +28,7 @@ public class TripDTO {
     @Builder
     public TripDTO(int id, String name, LocalDate startDate, LocalDate endDate,
                    List<ItineraryDTO> itineraries) {
-        this.id = id;
+        this.tripId = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;

@@ -339,7 +339,7 @@ public class ItineraryService {
 //        }
 //    }
 // CSV 파일에서 여정 정보를 읽어오는 메서드
-private static List<ItineraryDTO> getItineraryListFromCSV(String csvFilePath) throws IOException {
+public static List<ItineraryDTO> getItineraryListFromCSV(String csvFilePath) throws IOException {
     try (Reader reader = new FileReader(csvFilePath)) {
         CsvToBean<ItineraryDTO> csvToBean = new CsvToBeanBuilder<ItineraryDTO>(reader)
                 .withType(ItineraryDTO.class)
