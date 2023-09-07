@@ -8,12 +8,17 @@ import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
+import global.dto.TripCsvDTO;
+import global.util.CsvUtil;
+import global.util.FileUtil;
 import global.util.JsonUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,7 +89,41 @@ public class ItineraryService {
         return false;
     }
 
+    /**
+     * (csv) 특정 여행의 여정을 조회하는 메서드
+     *
+     * @param
+     * @throws FileNotFoundException
+     * @throws
+     */
 
+    public List<ItineraryDTO> getItineraryListFromTripCSV(int TripId) throws FileNotFoundException {
+        FileUtil fileUtil = new FileUtil();
+        List<ItineraryDTO> ItineraryList = new ArrayList<>();
+        String path = CSVPATH + "/trip_" + TripId + ".csv";
+        List<TripCsvDTO> tripCsvList = fileUtil.readCsvFile(path);
+        for (TripCsvDTO tripCsv : tripCsvList) {
+            System.out.println(tripCsv.getItineraryId());
+            ItineraryDTO itinerary = tripCsv.toItineraryDTO();
+            ItineraryList.add(itinerary);
+        }
+        return ItineraryList;
+
+
+    }
+
+    /**
+     * (csv) 특정 메소드를 삭제하는 메서드
+     */
+//    public boolean deleteItineraryCSV(int TripId, int ItineraryId) {
+//        List<TripCSVDTO> trip = tripService.getTripListFromJsonCSV(TripId);
+//
+//    }
+    public static void main(String[] args) throws FileNotFoundException {
+        ItineraryService itineraryService = new ItineraryService();
+        List<ItineraryDTO> list = itineraryService.getItineraryListFromTripCSV(1);
+        System.out.println(list);
+    }
 
 
 }
