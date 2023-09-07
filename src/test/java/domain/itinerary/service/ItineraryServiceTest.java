@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
+import domain.trip.service.TripService;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,10 +24,45 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ItineraryServiceTest {
 
+    TripService tripService = new TripService();
     ItineraryService itineraryService = new ItineraryService();
 
     @Mock
     ItineraryService mockItinerarySerivce = new ItineraryService();
+
+    @Mock
+    TripService mockTripService = new TripService();
+
+    @Nested
+    @DisplayName("getItineraryListFromTrip()은")
+    class Context_getItineraryListFromTrip {
+
+        @Test
+        @DisplayName("특정 여행의 여정 기록을 조회할 수 있다.")
+        void _willSuccess() throws FileNotFoundException {
+            //given
+            List<ItineraryDTO> itineraryList = new ArrayList<>();
+            itineraryList.add(ItineraryDTO.builder().id(1).build());
+            //when(mockItineraryService.getItineraryListFromTrip(1)).thenReturn(itineraryList);
+
+            //when
+            List<ItineraryDTO> result = itineraryService.getItineraryListFromTrip(1);
+
+            //then
+            Assertions.assertEquals(result.get(0).getId(), itineraryList.get(0).getId());
+        }
+
+        @Test
+        @DisplayName("특정 여행 기록이 없으면 조회할 수 없다.")
+        void tripFileNotFound_willFail() {
+            Throwable exception = assertThrows(TripFileNotFoundException.class, () -> {
+                tripService.getTripFromJson(3);
+            });
+            assertEquals("여행 파일을 찾을 수 없습니다.", exception.getMessage());
+        }
+
+    }
+
 
     @Nested
     @DisplayName("deleteItinerary()은 ")
@@ -41,7 +78,7 @@ public class ItineraryServiceTest {
             TripDTO trip = TripDTO.builder().id(1).itineraries(itineraryList).build();
 
             //when
-            boolean result = ItineraryService.deleteItinerary(1,4);
+            boolean result = ItineraryService.deleteItinerary(1, 4);
 
             //then
             Assertions.assertTrue(result);
