@@ -4,11 +4,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import domain.itinerary.dto.ItineraryDTO;
+import domain.itinerary.exception.ItineraryNotFoundException;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
 import global.dto.TripCsvDTO;
+import global.util.CsvUtil;
 import global.util.FileUtil;
 import global.util.JsonUtil;
 import java.io.File;
@@ -105,6 +109,62 @@ public class ItineraryService {
         }
         return ItineraryList;
 
+
+    }
+
+    /**
+     * (csv) 특정 메소드를 삭제하는 메서드
+     */
+    public boolean deleteItineraryCSV(int TripId, int ItineraryId)
+        throws ItineraryNotFoundException {
+        List<ItineraryDTO> ItineraryList = new ArrayList<>();
+        String path = CSVPATH + "/trip_" + TripId + ".csv";
+        List<TripCsvDTO> tripCsvList = fileUtil.readCsvFile(path);
+        List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
+
+        for (TripCsvDTO tripCsv : tripCsvList) {
+            ItineraryDTO itinerary = tripCsv.toItineraryDTO();
+            ItineraryList.add(itinerary);
+        }
+
+        for (int i = 0; i < ItineraryList.size(); i++) {
+            if (ItineraryList.get(i).getId() == ItineraryId) {
+                ItineraryList.remove(i);
+                tripCsvList.remove(i);
+
+            }
+        }
+
+        for (int i = 0; i < ItineraryList.size(); i++) {
+
+            TripCsvDTO tripCsvDTO = ItineraryList.get(i)
+                .toTripCsvDTO(tripCsvList.get(i).getTripId(),
+                    tripCsvList.get(i).getTripName(), tripCsvList.get(i).getStartDate(),
+                    tripCsvList.get(i).getEndDate());
+            tripCsvDTOList.add(tripCsvDTO);
+        }
+        try {
+            CsvUtil.toCsv(tripCsvDTOList, path);
+            return true;
+        } catch (CsvRequiredFieldEmptyException e) {
+            e.printStackTrace();
+        } catch (CsvDataTypeMismatchException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+    public static void main(String[] args) throws FileNotFoundException, ItineraryNotFoundException {
+        ItineraryService itineraryService = new ItineraryService();
+        //List<ItineraryDTO> list = itineraryService.getItineraryListFromTripCSV(1);
+        Boolean delete = itineraryService.deleteItineraryCSV(1, 2);
+        if(delete==false){
+            throw new ItineraryNotFoundException();
+        };
 
     }
 
