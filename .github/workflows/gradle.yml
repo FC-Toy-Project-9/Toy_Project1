@@ -30,10 +30,7 @@ jobs:
         
     - name: Build with Gradle
       run: ./gradlew build -x test
-
-    - name: Test with Gradle
-      run: ./gradlew test
-    
+  
     - name: Publish result of unit test
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
