@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import domain.itinerary.dto.ItineraryDTO;
+import domain.itinerary.exception.ItineraryNotFoundException;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
@@ -68,7 +69,7 @@ public class ItineraryServiceTest {
 
         @Test
         @DisplayName("특정 여정을 삭제할 수 있다.")
-        void _willSuccess() {
+        void _willSuccess() throws ItineraryNotFoundException {
             //given
             List<ItineraryDTO> itineraryList = new ArrayList<>();
             ItineraryDTO itinerary = ItineraryDTO.builder().id(4).build();
