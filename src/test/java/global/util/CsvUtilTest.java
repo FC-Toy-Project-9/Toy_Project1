@@ -34,12 +34,12 @@ class CsvUtilTest {
                     "2,Family Vacation2,2023-07-16,2023-07-21,09:00:00,2023-07-21T09:00:00\n" +
                     "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
                     "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
-            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
+            List<TripTestDTO> trips = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
             String filePath = "./src/test/java/global/util/a.csv";
 
             try {
                 // CSV 파일 저장
-                CsvUtil.toCsv(people, filePath);
+                CsvUtil.toCsv(trips, filePath);
 
                 // 파일이 정상적으로 생성되었는지 확인
                 Assertions.assertTrue(new File(filePath).exists());
@@ -63,9 +63,9 @@ class CsvUtilTest {
                     "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
                     "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
+            List<TripTestDTO> trips = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
-            Assertions.assertEquals(true, people.get(0).getTripName() != null);
+            Assertions.assertEquals(true, trips.get(0).getTripName() != null);
         }
 
         @Test
@@ -78,9 +78,9 @@ class CsvUtilTest {
                     "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
                     "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
+            List<TripTestDTO> trips = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
-            Assertions.assertEquals(true, people.get(0).getTripId() != 0);
+            Assertions.assertEquals(true, trips.get(0).getTripId() != 0);
         }
 
         @Test
@@ -93,10 +93,10 @@ class CsvUtilTest {
                     "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
                     "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
+            List<TripTestDTO> trips = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
             Assertions.assertEquals(
-                LocalDate.of(2023, 7, 20), people.get(0).getEndDate());
+                LocalDate.of(2023, 7, 20), trips.get(0).getEndDate());
         }
 
         @Test
@@ -109,10 +109,10 @@ class CsvUtilTest {
                     "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
                     "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
+            List<TripTestDTO> trips = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
             Assertions.assertEquals(
-                LocalTime.of(8, 0, 0), people.get(0).getTime());
+                LocalTime.of(8, 0, 0), trips.get(0).getTime());
         }
 
         @Test
@@ -125,11 +125,11 @@ class CsvUtilTest {
                     "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
                     "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
 
-            List<TripTestDTO> people = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
+            List<TripTestDTO> trips = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
 
             Assertions.assertEquals(
                 LocalDateTime.of(2023, 7, 20, 8, 0, 0),
-                people.get(0).getDatetime());
+                trips.get(0).getDatetime());
         }
     }
 

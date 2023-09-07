@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class TripCsvDTO {
 
     @CsvBindByName(column = "trip_id", required = true)
@@ -71,6 +71,19 @@ public class TripCsvDTO {
         this.checkOut = checkOut;
     }
 
+    public TripCsvDTO(int tripId, String tripName, LocalDate startDate, LocalDate endDate){
+        this.tripId = tripId;
+        this.tripName = tripName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.itineraryId = -1;
+        this.departure = null;
+        this.destination = null;
+        this.departureTime = null;
+        this.arrivalTime = null;
+        this.checkIn = null;
+        this.checkOut = null;
+    }
     /**
      * TripCsvDTO에서 여정 정보를 ItineraryDTO에 담아 반환하는 메서드
      *
