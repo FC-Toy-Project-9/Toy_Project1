@@ -1,8 +1,11 @@
 package domain.trip.service;
 
+import com.opencsv.CSVWriter;
 import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
+import global.dto.TripCsvDTO;
+import global.util.CsvUtil;
 import global.util.JsonUtil;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,6 +25,7 @@ import java.util.List;
 public class TripService {
 
     private static final String JSONPATH = "src/main/resources/trip/json";
+    private static final String CSVPATH = "src/main/resources/trip/csv";
     /**
      * 사용자로부터 여행정보를 입력받아 TripDTO 객체를 생성하는 메서드
      *
@@ -104,6 +108,24 @@ public class TripService {
             e.printStackTrace();
         }
     }
+
+    /**
+     * TripDTO객체를 TripCSVDto로 변환 후 CSV파일에 저장하는 메서드
+     * @param tripDTO 여행정보를 담은 TripDTO객체 
+     */
+
+    public void saveTripToCSV(TripDTO tripDTO){
+        TripCsvDTO tripCsvDTO = new TripCsvDTO(tripDTO.getId(), tripDTO.getName(), tripDTO.getStartDate(), tripDTO.getEndDate());
+        String csvFilePath = CSVPATH+"/trip_"+tripDTO.getId()+".csv";
+        try(CSVWriter cw = new CSVWriter(new FileWriter(csvFilePath))){
+            List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
+            tripCsvDTOList.add(tripCsvDTO);
+            CsvUtil.toCsv(tripCsvDTOList, csvFilePath);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 날짜 유효성 검증하는 메서드
