@@ -229,7 +229,7 @@ public class TripService {
      */
     public List<TripDTO> getTripListFromCsv() {
         List<TripDTO> tripList = new ArrayList<>();
-        File[] files = new File(JSONPATH).listFiles();
+        File[] files = new File(CSVPATH).listFiles();
         if (files == null) {
             throw new TripFileNotFoundException();
         }
@@ -253,7 +253,7 @@ public class TripService {
      * @return src/main/resources/trip/csv Directory 내 여행 기록 id에 해당 하는 csv 에서 읽어온 TripDTO 객체
      */
     public TripDTO getTripFromCsv(int id) {
-        List<TripCsvDTO> csv = fileUtil.readCsvFile(JSONPATH + "/trip_" + id + ".json");
+        List<TripCsvDTO> csv = fileUtil.readCsvFile(CSVPATH + "/trip_" + id + ".csv");
         List<ItineraryDTO> itineraries = getItineraries(csv);
         return TripDTO.builder().id(csv.get(0).getTripId()).name(csv.get(0).getTripName())
             .startDate(csv.get(0).getStartDate()).endDate(csv.get(0).getEndDate())
