@@ -20,6 +20,8 @@ public class InputUtil {
             String input = scanner.nextLine();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+//            input += "T00:00";
+
             try {
                 LocalDate date = LocalDate.parse(input, formatter);
                 LocalDateTime dateTime = date.atStartOfDay();
