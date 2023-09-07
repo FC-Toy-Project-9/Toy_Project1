@@ -1,14 +1,17 @@
 package domain.itinerary.dto;
 
 import com.google.gson.annotations.SerializedName;
+import com.opencsv.bean.CsvDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 public class ItineraryDTO {
 
     @SerializedName("itinerary_id")
@@ -18,12 +21,16 @@ public class ItineraryDTO {
     @SerializedName("destination")
     private String destination;
     @SerializedName("departure_time")
+    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime departureTime;
     @SerializedName("arrival_time")
+    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime arrivalTime;
     @SerializedName("check_in")
+    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime checkIn;
     @SerializedName("check_out")
+    @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime checkOut;
 
     @Builder

@@ -78,7 +78,7 @@ public class ItineraryServiceTest {
             TripDTO trip = TripDTO.builder().id(1).itineraries(itineraryList).build();
 
             //when
-            boolean result = ItineraryService.deleteItinerary(1, 4);
+            boolean result = itineraryService.deleteItinerary(1, 4);
 
             //then
             Assertions.assertTrue(result);
