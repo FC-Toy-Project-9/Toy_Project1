@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
 
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import domain.itinerary.dto.ItineraryDTO;
+import domain.itinerary.exception.ItineraryException;
 import domain.itinerary.exception.ItineraryNotFoundException;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
@@ -40,7 +43,8 @@ public class ItineraryServiceTest {
 
         @Test
         @DisplayName("특정 여행의 여정 기록을 조회할 수 있다.")
-        void _willSuccess() throws FileNotFoundException {
+        void _willSuccess()
+            throws IOException, ItineraryException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
             //given
             postFileJSON();
             List<ItineraryDTO> itineraryList = new ArrayList<>();
@@ -73,7 +77,7 @@ public class ItineraryServiceTest {
 
         @Test
         @DisplayName("특정 여정을 삭제할 수 있다.")
-        void _willSuccess() throws ItineraryNotFoundException {
+        void _willSuccess() throws ItineraryNotFoundException, IOException {
             //given, when
             postFileJSON();
             boolean result = itineraryService.deleteItineraryFromJson(999, 1);
@@ -90,7 +94,7 @@ public class ItineraryServiceTest {
 
         @Test
         @DisplayName("특정 여행의 여정 기록을 조회할 수 있다.")
-        void _willSuccess() throws FileNotFoundException {
+        void _willSuccess() throws IOException {
             //given
             postFileCSV();
             ItineraryDTO itinerary = TripCsvDTO.builder()
@@ -118,7 +122,7 @@ public class ItineraryServiceTest {
 
         @Test
         @DisplayName("특정 여정을 삭제할 수 있다.")
-        void _willSuccess() throws ItineraryNotFoundException {
+        void _willSuccess() throws ItineraryNotFoundException, IOException {
             //given, when
             postFileCSV();
             boolean result = itineraryService.deleteItineraryFromCSV(999, 1);

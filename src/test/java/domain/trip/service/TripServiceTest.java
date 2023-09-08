@@ -94,7 +94,7 @@ public class TripServiceTest {
 
         @Test
         @DisplayName("여행 기록을 삭제할 수 있다.")
-        void _willSuccess() {
+        void _willSuccess() throws IOException {
             // given
             // Test 를 위해 삭제할 파일 생성
             FileWriter fw = null;
@@ -121,7 +121,7 @@ public class TripServiceTest {
 
         @Test
         @DisplayName("해달 여행 기록이 없으면 여행 기록을 삭제할 수 없다.")
-        void tripFileNotFound_willFail() {
+        void tripFileNotFound_willFail() throws IOException {
             // given, when
             boolean result = tripService.deleteTripFromJson(996);
 
@@ -198,7 +198,7 @@ public class TripServiceTest {
 
         @Test
         @DisplayName("여행 기록을 삭제할 수 있다.")
-        void _willSuccess() {
+        void _willSuccess() throws IOException {
             // given
             // Test 를 위해 삭제할 파일 생성
             FileWriter fw = null;
@@ -225,7 +225,7 @@ public class TripServiceTest {
 
         @Test
         @DisplayName("해달 여행 기록이 없으면 여행 기록을 삭제할 수 없다.")
-        void tripFileNotFound_willFail() {
+        void tripFileNotFound_willFail() throws IOException {
             // given, when
             boolean result = tripService.deleteTripFromCsv(1);
 
