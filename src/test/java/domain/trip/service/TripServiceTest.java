@@ -82,7 +82,7 @@ public class TripServiceTest {
         void tripFileNotFound_willFail() {
             // given, when, then
             Throwable exception = assertThrows(TripFileNotFoundException.class, () -> {
-                tripService.getTripFromJson(2);
+                tripService.getTripFromJson(997);
             });
             assertEquals("여행 파일을 찾을 수 없습니다.", exception.getMessage());
         }
@@ -99,7 +99,7 @@ public class TripServiceTest {
             // Test 를 위해 삭제할 파일 생성
             FileWriter fw = null;
             try {
-                fw = new FileWriter("src/main/resources/trip/json/trip_1.json");
+                fw = new FileWriter("src/main/resources/trip/json/trip_998.json");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -113,7 +113,7 @@ public class TripServiceTest {
             }
 
             // when
-            boolean result = tripService.deleteTripFromJson(1);
+            boolean result = tripService.deleteTripFromJson(998);
 
             // then
             Assertions.assertTrue(result);
@@ -123,7 +123,7 @@ public class TripServiceTest {
         @DisplayName("해달 여행 기록이 없으면 여행 기록을 삭제할 수 없다.")
         void tripFileNotFound_willFail() {
             // given, when
-            boolean result = tripService.deleteTripFromJson(1);
+            boolean result = tripService.deleteTripFromJson(996);
 
             // then
             Assertions.assertFalse(result);
@@ -203,7 +203,7 @@ public class TripServiceTest {
             // Test 를 위해 삭제할 파일 생성
             FileWriter fw = null;
             try {
-                fw = new FileWriter("src/main/resources/trip/csv/trip_1.csv");
+                fw = new FileWriter("src/main/resources/trip/csv/trip_998.csv");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -217,7 +217,7 @@ public class TripServiceTest {
             }
 
             // when
-            boolean result = tripService.deleteTripFromCsv(1);
+            boolean result = tripService.deleteTripFromCsv(998);
 
             // then
             Assertions.assertTrue(result);

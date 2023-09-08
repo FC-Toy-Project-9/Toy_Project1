@@ -45,7 +45,7 @@ public class ItineraryService {
 
         String jsonFilePath = JSONPATH + "/trip_" + tripId + ".json";
 
-        if (trip.getItineraries() != null) {
+        if (!trip.getItineraries().isEmpty()) {
             File file = new File(jsonFilePath);
             if (!file.isFile() || !file.canRead()) {
                 throw new TripFileNotFoundException();
@@ -116,8 +116,14 @@ public class ItineraryService {
 
         List<TripCsvDTO> tripCsvList = fileUtil.readCsvFile(csvFilePath);
         for (TripCsvDTO tripCsv : tripCsvList) {
-            ItineraryDTO itinerary = tripCsv.toItineraryDTO();
-            itineraryList.add(itinerary);
+            Integer id = tripCsv.getItineraryId();
+            if(id != 0){
+                ItineraryDTO itinerary = tripCsv.toItineraryDTO();
+                itineraryList.add(itinerary);
+            } else {
+                //Itinerary 기록하기 API로 연동
+            }
+
         }
         return itineraryList;
 
@@ -176,6 +182,7 @@ public class ItineraryService {
         }
         return false;
     }
+
 
 }
 
