@@ -20,10 +20,7 @@ public class InputUtil {
             String input = scanner.nextLine();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-//            input += "T00:00";
             try {
-                // 주석 해제하여 시간 부분을 추가하도록 변경
-                // input += "T00:00";
                 LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
                 return dateTime;
             } catch (DateTimeParseException e) {
@@ -32,14 +29,3 @@ public class InputUtil {
         }
     }
 }
-//            try {
-//                LocalDate date = LocalDate.parse(input, formatter);
-//                LocalDateTime dateTime = date.atStartOfDay();
-//                return dateTime;
-//            } catch (DateTimeParseException e) {
-//                System.out.println("유효한 날짜 형식이 아닙니다. 다시 입력해주세요.");
-//            }
-//        }
-//    }
-//
-//}
