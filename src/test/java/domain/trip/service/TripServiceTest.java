@@ -82,7 +82,7 @@ public class TripServiceTest {
         void tripFileNotFound_willFail() {
             // given, when, then
             Throwable exception = assertThrows(TripFileNotFoundException.class, () -> {
-                tripService.getTripFromJson(2);
+                tripService.getTripFromJson(105);
             });
             assertEquals("여행 파일을 찾을 수 없습니다.", exception.getMessage());
         }
@@ -99,7 +99,7 @@ public class TripServiceTest {
             // Test 를 위해 삭제할 파일 생성
             FileWriter fw = null;
             try {
-                fw = new FileWriter("src/main/resources/trip/json/trip_1.json");
+                fw = new FileWriter("src/main/resources/trip/json/trip_105.json");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -113,7 +113,7 @@ public class TripServiceTest {
             }
 
             // when
-            boolean result = tripService.deleteTripFromJson(1);
+            boolean result = tripService.deleteTripFromJson(105);
 
             // then
             Assertions.assertTrue(result);

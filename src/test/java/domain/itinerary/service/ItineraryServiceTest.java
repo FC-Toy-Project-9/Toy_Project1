@@ -45,13 +45,13 @@ public class ItineraryServiceTest {
             postFileJSON();
             List<ItineraryDTO> itineraryList = new ArrayList<>();
             itineraryList.add(ItineraryDTO.builder().id(1).build());
-            lenient().when(mockItineraryService.getItineraryListFromJson(3)).thenReturn(itineraryList);
+            lenient().when(mockItineraryService.getItineraryListFromJson(999)).thenReturn(itineraryList);
 
             //when
-            List<ItineraryDTO> result = itineraryService.getItineraryListFromJson(3);
+            List<ItineraryDTO> result = itineraryService.getItineraryListFromJson(999);
 
             //then
-            tripService.deleteTripFromJson(3);
+            tripService.deleteTripFromJson(999);
             Assertions.assertEquals(result.get(0).getId(), itineraryList.get(0).getId());
         }
 
@@ -59,7 +59,7 @@ public class ItineraryServiceTest {
         @DisplayName("특정 여행 기록이 없으면 조회할 수 없다.")
         void tripFileNotFound_willFail() {
             Throwable exception = assertThrows(TripFileNotFoundException.class, () -> {
-                tripService.getTripFromJson(5);
+                tripService.getTripFromJson(1000);
             });
             assertEquals("여행 파일을 찾을 수 없습니다.", exception.getMessage());
         }
@@ -76,8 +76,8 @@ public class ItineraryServiceTest {
         void _willSuccess() throws ItineraryNotFoundException {
             //given, when
             postFileJSON();
-            boolean result = itineraryService.deleteItineraryFromJson(3, 1);
-            tripService.deleteTripFromJson(3);
+            boolean result = itineraryService.deleteItineraryFromJson(999, 1);
+            tripService.deleteTripFromJson(999);
 
             //then
             Assertions.assertTrue(result);
@@ -94,18 +94,18 @@ public class ItineraryServiceTest {
             //given
             postFileCSV();
             ItineraryDTO itinerary = TripCsvDTO.builder()
-                .tripId(3).tripName("Family Vacation")
+                .tripId(999).tripName("Family Vacation")
                 .startDate(LocalDate.parse("2023-08-15", DateTimeFormatter.ISO_DATE))
                 .endDate(LocalDate.parse("2023-08-25", DateTimeFormatter.ISO_DATE))
                 .itineraryId(1).build().toItineraryDTO();
             List<ItineraryDTO> itineraryList = new ArrayList<>();
             itineraryList.add(itinerary);
-            lenient().when(mockItineraryService.getItineraryListFromCSV(3))
+            lenient().when(mockItineraryService.getItineraryListFromCSV(999))
                 .thenReturn(itineraryList);
 
             //given,when
-            List<ItineraryDTO> result = itineraryService.getItineraryListFromCSV(3);
-            tripService.deleteTripFromCsv(3);
+            List<ItineraryDTO> result = itineraryService.getItineraryListFromCSV(999);
+            tripService.deleteTripFromCsv(999);
 
             //then
             Assertions.assertEquals(result.get(0).getId(), itineraryList.get(0).getId());
@@ -121,8 +121,8 @@ public class ItineraryServiceTest {
         void _willSuccess() throws ItineraryNotFoundException {
             //given, when
             postFileCSV();
-            boolean result = itineraryService.deleteItineraryFromCSV(3, 1);
-            tripService.deleteTripFromCsv(3);
+            boolean result = itineraryService.deleteItineraryFromCSV(999, 1);
+            tripService.deleteTripFromCsv(999);
 
             //then
             Assertions.assertTrue(result);
@@ -132,9 +132,9 @@ public class ItineraryServiceTest {
     public void postFileJSON(){
         FileWriter fw = null;
         try {
-            fw = new FileWriter("src/main/resources/trip/json/trip_3.json");
+            fw = new FileWriter("src/main/resources/trip/json/trip_999.json");
             String text = "{\n"
-                + "  \"trip_id\": 3,\n"
+                + "  \"trip_id\": 999,\n"
                 + "  \"trip_name\": \"Family Vacation\",\n"
                 + "  \"start_date\": \"2023-07-15\",\n"
                 + "  \"end_date\": \"2023-07-20\",\n"
@@ -167,13 +167,13 @@ public class ItineraryServiceTest {
     public void postFileCSV(){
         FileWriter fw = null;
         try {
-            fw = new FileWriter("src/main/resources/trip/csv/trip_3.csv");
+            fw = new FileWriter("src/main/resources/trip/csv/trip_999.csv");
             String text = "trip_id,trip_name,start_date,end_date,itinerary_id,departure,destination,departure_time,arrival_time,check_in,check_out\n"
-                + "3,Family Vacation,2023-08-15,2023-08-25,1,New York,Los Angeles,2023-07-15T08:00:00,2023-07-15T10:00:00,,\n"
-                + "3,Family Vacation,2023-08-15,2023-08-25,2,,,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00\n"
-                + "3,Family Vacation,2023-08-15,2023-08-25,3,Los Angeles,Las Vegas,2023-07-15T08:00:00,2023-07-15T08:00:00,,\n"
-                + "3,Family Vacation,2023-08-15,2023-08-25,4,,,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00\n"
-                + "3,Family Vacation,2023-08-15,2023-08-25,5,Las Vegas,New York,2023-07-15T08:00:00,2023-07-15T08:00:00,,";
+                + "999,Family Vacation,2023-08-15,2023-08-25,1,New York,Los Angeles,2023-07-15T08:00:00,2023-07-15T10:00:00,,\n"
+                + "999,Family Vacation,2023-08-15,2023-08-25,2,,,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00\n"
+                + "999,Family Vacation,2023-08-15,2023-08-25,3,Los Angeles,Las Vegas,2023-07-15T08:00:00,2023-07-15T08:00:00,,\n"
+                + "999,Family Vacation,2023-08-15,2023-08-25,4,,,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00,2023-07-15T08:00:00\n"
+                + "999,Family Vacation,2023-08-15,2023-08-25,5,Las Vegas,New York,2023-07-15T08:00:00,2023-07-15T08:00:00,,";
             fw.write(text);
         } catch (Exception e) {
             e.printStackTrace();
