@@ -203,7 +203,7 @@ public class TripServiceTest {
             // Test 를 위해 삭제할 파일 생성
             FileWriter fw = null;
             try {
-                fw = new FileWriter("src/main/resources/trip/csv/trip_1.csv");
+                fw = new FileWriter("src/main/resources/trip/csv/trip_106.csv");
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -217,7 +217,7 @@ public class TripServiceTest {
             }
 
             // when
-            boolean result = tripService.deleteTripFromCsv(1);
+            boolean result = tripService.deleteTripFromCsv(106);
 
             // then
             Assertions.assertTrue(result);
