@@ -2,6 +2,7 @@ package global.dto;
 
 import com.google.gson.annotations.SerializedName;
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvDate;
 import domain.itinerary.dto.ItineraryDTO;
 import java.time.LocalDate;
@@ -16,41 +17,52 @@ import lombok.NoArgsConstructor;
 public class TripCsvDTO {
 
     @CsvBindByName(column = "trip_id", required = true)
+    @CsvBindByPosition(position = 0)
     private int tripId;
 
     @CsvBindByName(column = "trip_name", required = true)
+    @CsvBindByPosition(position = 1)
     private String tripName;
 
     @CsvBindByName(column = "start_date", required = true)
+    @CsvBindByPosition(position = 2)
     @CsvDate("yyyy-MM-dd")
     private LocalDate startDate;
 
     @CsvBindByName(column = "end_date", required = true)
+    @CsvBindByPosition(position = 3)
     @CsvDate("yyyy-MM-dd")
     private LocalDate endDate;
 
     @CsvBindByName(column = "itinerary_id")
+    @CsvBindByPosition(position = 4)
     private int itineraryId;
 
     @CsvBindByName(column = "departure")
+    @CsvBindByPosition(position = 5)
     private String departure;
 
     @CsvBindByName(column = "destination")
+    @CsvBindByPosition(position = 6)
     private String destination;
 
     @CsvBindByName(column = "departure_time")
+    @CsvBindByPosition(position = 7)
     @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime departureTime;
 
     @CsvBindByName(column = "arrival_time")
+    @CsvBindByPosition(position = 8)
     @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime arrivalTime;
 
     @CsvBindByName(column = "check_in")
+    @CsvBindByPosition(position = 9)
     @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime checkIn;
 
     @CsvBindByName(column = "check_out")
+    @CsvBindByPosition(position = 10)
     @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime checkOut;
 
