@@ -11,6 +11,7 @@ import domain.itinerary.exception.ItineraryException;
 import domain.itinerary.exception.ItineraryNotFoundException;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
+import domain.trip.service.TripIDGenerator;
 import domain.trip.service.TripService;
 import global.dto.TripCsvDTO;
 import global.util.CsvUtil;
@@ -186,10 +187,6 @@ public class ItineraryService {
         String jsonFilePath = JSONPATH + "/trip_" + tripId + ".json";
         String csvFilePath = CSVPATH + "/trip_" + tripId + ".csv";
 
-//        List<ItineraryDTO> itineraryList = getItineraryListFromJson(tripId);
-
-//        if (itineraryList != null) {
-//            // JSON 파일을 읽어와서 TripDTO 객체로 변환
         TripDTO trip = fileUtil.readJsonFile(jsonFilePath, TripDTO.class);
 
         while (true) {
@@ -206,8 +203,7 @@ public class ItineraryService {
                 String updatedJson = JsonUtil.toJson(trip);   // TripDTO 객체를 JSON 문자열로 변환
                 writeJsonToFile(jsonFilePath, updatedJson);  // JSON 파일에 업데이트된 정보 저장
 
-                // CSV 파일에도 저장
-                addItineraryToCSV(csvFilePath, itinerary);
+                addItineraryToCSV(csvFilePath, itinerary);   // CSV 파일에도 저장
 
                 // 추가로 여정 정보를 저장 여부 묻기
                 System.out.print("추가로 여정 정보를 저장하시겠습니까? (yes/no) ");
@@ -236,17 +232,25 @@ public class ItineraryService {
         }
     }
 
+
     // 새로운 여정 정보를 생성하는 메서드
     private static ItineraryDTO createItinerary(TripDTO trip) {
-        // 이전 itinerary_id를 가져와서 1 증가
-        int previousItineraryId = trip.getItineraries() != null ? trip.getItineraries().size() : 0;
+        int previousItineraryId = 0; // 가장 작은 여정 ID 값으로 초기화
+
+        if (trip.getItineraries() != null && !trip.getItineraries().isEmpty()) {
+            for (ItineraryDTO itinerary : trip.getItineraries()) {
+                if (itinerary.getId() > previousItineraryId) {
+                    previousItineraryId = itinerary.getId();
+                }
+            }
+        }
 
         String departurePlace = InputUtil.getInputString("출발지");
         String destination = InputUtil.getInputString("도착지");
-        LocalDateTime departureTime = InputUtil.getInputLocalDate("출발 날짜");
-        LocalDateTime arrivalTime = InputUtil.getInputLocalDate("도착 날짜");
-        LocalDateTime checkIn = InputUtil.getInputLocalDate("체크인 날짜");
-        LocalDateTime checkOut = InputUtil.getInputLocalDate("체크아웃 날짜");
+        LocalDateTime departureTime = InputUtil.getInputLocalDateTime("출발 날짜");
+        LocalDateTime arrivalTime = InputUtil.getInputLocalDateTime("도착 날짜");
+        LocalDateTime checkIn = InputUtil.getInputLocalDateTime("체크인 날짜");
+        LocalDateTime checkOut = InputUtil.getInputLocalDateTime("체크아웃 날짜");
 
         return new ItineraryDTO(previousItineraryId + 1, departurePlace, destination,
                 departureTime, arrivalTime, checkIn, checkOut);
@@ -254,9 +258,6 @@ public class ItineraryService {
 
     // 여정 정보를 여행 객체에 추가하는 메서드
     private static void addItineraryToTrip(TripDTO trip, ItineraryDTO itinerary) {
-//        if (trip.getItineraries() == null) {
-//            trip.setItineraries(new ArrayList<>());
-//        }
         trip.getItineraries().add(itinerary);
     }
 
@@ -284,17 +285,7 @@ public class ItineraryService {
 
         trip.add(tripCsvDTO);
         CsvUtil.toCsv(trip, csvFilePath);
-//        if (itineraryList.isEmpty()) {
-//            // CSV 파일이 비어있을 때, 헤더를 추가
-//            itineraryList.add(getItineraryHeader());
-//        }
     }
-
-//    // CSV 파일의 헤더 정보를 반환하는 메서드
-//    private static ItineraryDTO getItineraryHeader() {
-//        return new TripCsvDTO("trip_id", "trip_name", "start_date", "end_date", "itinerary_id", "departure", "destination", "departure_time", "arrival_time", "check_in", "check_out").toItineraryDTO();
-//    }
-
 }
 
 

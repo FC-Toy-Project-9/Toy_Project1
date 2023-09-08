@@ -14,22 +14,32 @@ public class InputUtil {
         return scanner.nextLine();
     }
 
-    public static LocalDateTime getInputLocalDate(String prompt) {
+    public static LocalDateTime getInputLocalDateTime(String prompt) {
         while (true) {
-            System.out.print(prompt + " (yyyy-MM-dd): ");
+            System.out.print(prompt + " (yyyy-MM-dd HH:mm): ");
             String input = scanner.nextLine();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 //            input += "T00:00";
-
             try {
-                LocalDate date = LocalDate.parse(input, formatter);
-                LocalDateTime dateTime = date.atStartOfDay();
+                // 주석 해제하여 시간 부분을 추가하도록 변경
+                // input += "T00:00";
+                LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
                 return dateTime;
             } catch (DateTimeParseException e) {
-                System.out.println("유효한 날짜 형식이 아닙니다. 다시 입력해주세요.");
+                System.out.println("유효한 날짜 및 시간 형식이 아닙니다. 다시 입력해주세요.");
             }
         }
     }
-
 }
+//            try {
+//                LocalDate date = LocalDate.parse(input, formatter);
+//                LocalDateTime dateTime = date.atStartOfDay();
+//                return dateTime;
+//            } catch (DateTimeParseException e) {
+//                System.out.println("유효한 날짜 형식이 아닙니다. 다시 입력해주세요.");
+//            }
+//        }
+//    }
+//
+//}
