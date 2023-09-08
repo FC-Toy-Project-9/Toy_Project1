@@ -1,6 +1,7 @@
 package domain.trip.service;
 
-import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
@@ -12,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +33,8 @@ public class TripService {
     /**
      * 메뉴리스트 1.여행정보등록시 호출되는 메서드 사용자로부터 정보 입력받아 json파일 및 csv파일에 저장하는 기능 구현
      */
-    public void postTrip() {
+    public void postTrip()
+        throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
         //사용자로부터 정보 입력받아 TripDto객체 생성
         TripDTO tripDTO = createTrip();
 
@@ -45,11 +48,9 @@ public class TripService {
      *
      * @return 입력받은 정보로 구성된 새 TripDTO 객체
      */
-    private TripDTO createTrip() {
-        try {
-            //여행정보 입력받기
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+    private TripDTO createTrip() throws IOException {
+        //여행정보 입력받기
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.print("여행 이름: ");
             String tripName = br.readLine();
 
@@ -90,13 +91,9 @@ public class TripService {
             List<ItineraryDTO> itineraryDTOList = new ArrayList<>();
 
             // TripDTO 생성
-            TripDTO trip = new TripDTO(tripId, tripName, startDate, endDate, itineraryDTOList);
-
-            return trip;
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
+            return new TripDTO(tripId, tripName, startDate, endDate, itineraryDTOList);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -106,21 +103,17 @@ public class TripService {
      *
      * @param tripDTO: 저장할 정보를 담은 TripDTO객체
      */
-    private void saveTripToJson(TripDTO tripDTO) {
+    private void saveTripToJson(TripDTO tripDTO) throws IOException {
         //TripDTO -> Json으로 변환
         String tripJson = JsonUtil.toJson(tripDTO);
 
-        try {
-            //json파일에 저장
-            BufferedWriter bw = new BufferedWriter(
-                new FileWriter(JSONPATH + "/trip_" + tripDTO.getId() + ".json")); //파일열기
-            bw.write(tripJson); //json문자열 파일에 쓰기
+        //json파일에 저장
+        BufferedWriter bw = new BufferedWriter(
+            new FileWriter(JSONPATH + "/trip_" + tripDTO.getId() + ".json")); //파일열기
+        bw.write(tripJson); //json문자열 파일에 쓰기
 
-            //파일 닫기
-            bw.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //파일 닫기
+        bw.close();
     }
 
     /**
@@ -128,17 +121,14 @@ public class TripService {
      *
      * @param tripDTO 여행정보를 담은 TripDTO객체
      */
-    private void saveTripToCSV(TripDTO tripDTO) {
+    private void saveTripToCSV(TripDTO tripDTO)
+        throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
         TripCsvDTO tripCsvDTO = new TripCsvDTO(tripDTO.getId(), tripDTO.getName(),
             tripDTO.getStartDate(), tripDTO.getEndDate());
         String csvFilePath = CSVPATH + "/trip_" + tripDTO.getId() + ".csv";
-        try (CSVWriter cw = new CSVWriter(new FileWriter(csvFilePath))) {
-            List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
-            tripCsvDTOList.add(tripCsvDTO);
-            CsvUtil.toCsv(tripCsvDTOList, csvFilePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
+        tripCsvDTOList.add(tripCsvDTO);
+        CsvUtil.toCsv(tripCsvDTOList, csvFilePath);
     }
 
 
@@ -148,7 +138,7 @@ public class TripService {
      * @param checkDate 검증이 필요한 날짜 문자열
      * @return 날짜가 정해진 형식과 다르거나, 불가능한 숫자가 들어간 경우 false, 올바른 날짜인 경우 true
      */
-    private static boolean checkDateFormat(String checkDate) {
+    private boolean checkDateFormat(String checkDate) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             dateFormat.setLenient(false);//허술하게 체크하지 않겠다
@@ -212,14 +202,9 @@ public class TripService {
      * @return src/main/resources/trip/json Directory 내 여행 기록 id에 해당 하는 json 삭제 성공 여부(삭제 성공: true,
      * 삭제 실패: false)
      */
-    public boolean deleteTripFromJson(int id) {
+    public boolean deleteTripFromJson(int id) throws IOException {
         Path filePath = Paths.get(JSONPATH + "/trip_" + id + ".json");
-        try {
-            return Files.deleteIfExists(filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        return Files.deleteIfExists(filePath);
     }
 
     /**
@@ -267,14 +252,9 @@ public class TripService {
      * @return src/main/resources/trip/csv Directory 내 여행 기록 id에 해당 하는 csv 삭제 성공 여부(삭제 성공: true, 삭제
      * 실패: false)
      */
-    public boolean deleteTripFromCsv(int id) {
+    public boolean deleteTripFromCsv(int id) throws IOException {
         Path filePath = Paths.get(CSVPATH + "/trip_" + id + ".csv");
-        try {
-            return Files.deleteIfExists(filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        return Files.deleteIfExists(filePath);
     }
 
     /**

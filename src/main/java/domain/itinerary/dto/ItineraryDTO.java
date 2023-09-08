@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -43,14 +44,14 @@ public class ItineraryDTO {
 
     @Override
     public String toString(){
-        return "Itinerary [id : " + id + ", " +
-            "departurePlace : " + departurePlace + ", " +
-            "destination : " + destination + ", " +
-            "departureTime : " + departureTime + ", " +
-            "arrivalTime : " + arrivalTime + ", " +
-            "checkIn : " + checkIn + ", " +
-            "checkOut : " + checkOut + "]" + "\n" ;
-
+        return "여정 ID: "+ id
+            +"\n출발지: " + departurePlace
+            +"\n도착지: " + destination
+            +"\n출발 시간: " + departureTime
+            +"\n도착 시간: " + arrivalTime
+            +"\n체크인: " + checkIn
+            +"\n체크아웃: " + checkOut
+            +"\n------------------------------";
     }
 
     public TripCsvDTO toTripCsvDTO(int tripId, String tripName, LocalDate startDate, LocalDate endDate){

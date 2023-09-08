@@ -34,9 +34,19 @@ public class TripDTO {
         this.itineraries = itineraries;
     }
 
+    /**
+     * ---- 여행 ID: 1
+     * <p>
+     * <p>
+     * ---
+     */
+
     @Override
     public String toString() {
-        return "TripDTO{" + "id=" + id + ", name='" + name + '\'' + ", startDate=" + startDate
-            + ", endDate=" + endDate + ", itineraries=" + itineraries + '}';
+        return "여행 ID: " + id
+            + "\n여행 이름: " + name
+            + "\n시작일: " + startDate
+            + "\n종료일: " + endDate
+            + "\n------------------------------";
     }
 }
