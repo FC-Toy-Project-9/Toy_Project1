@@ -1,6 +1,7 @@
 package global.util;
 
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvDate;
 import java.io.File;
 import java.io.StringReader;
@@ -35,7 +36,7 @@ class CsvUtilTest {
                     "3,Family Vacation3,2023-07-17,2023-07-22,15:00:00,2023-07-22T15:00:00\n" +
                     "4,Family Vacation4,2023-07-18,2023-07-23,16:00:00,2023-07-15T16:00:00\n";
             List<TripTestDTO> trips = CsvUtil.fromCsv(new StringReader(csv), TripTestDTO.class);
-            String filePath = "./src/test/java/global/util/a.csv";
+            String filePath = "src/test/java/global/util/a.csv";
 
             try {
                 // CSV 파일 저장
@@ -133,22 +134,29 @@ class CsvUtilTest {
         }
     }
 
+
     public static class TripTestDTO {
 
         @CsvBindByName(column = "trip_id", required = true)
+        @CsvBindByPosition(position = 0)
         private Long tripId;
         @CsvBindByName(column = "trip_name", required = true)
+        @CsvBindByPosition(position = 1)
         private String tripName;
         @CsvBindByName(column = "start_date", required = true)
+        @CsvBindByPosition(position = 2)
         @CsvDate("yyyy-MM-dd")
         private LocalDate startDate;
         @CsvBindByName(column = "end_date", required = true)
+        @CsvBindByPosition(position = 3)
         @CsvDate("yyyy-MM-dd")
         private LocalDate endDate;
         @CsvBindByName(column = "time", required = true)
+        @CsvBindByPosition(position = 4)
         @CsvDate("HH:mm:ss")
         private LocalTime time;
         @CsvBindByName(column = "datetime", required = true)
+        @CsvBindByPosition(position = 5)
         @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
         private LocalDateTime datetime;
 
