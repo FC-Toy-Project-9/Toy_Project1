@@ -1,15 +1,17 @@
 package domain.itinerary.dto;
 
 import com.google.gson.annotations.SerializedName;
+import global.dto.TripCsvDTO;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItineraryDTO {
 
     @SerializedName("itinerary_id")
@@ -50,6 +52,13 @@ public class ItineraryDTO {
             "checkIn : " + checkIn + ", " +
             "checkOut : " + checkOut + "]" + "\n" ;
 
+    }
+
+    public TripCsvDTO toTripCsvDTO(int tripId, String tripName, LocalDate startDate, LocalDate endDate){
+        return TripCsvDTO.builder().tripId(tripId).tripName(tripName).startDate(startDate)
+            .endDate(endDate).itineraryId(this.id).departure(this.departurePlace).destination(this.destination)
+            .departureTime(this.departureTime).arrivalTime(this.arrivalTime)
+            .checkIn(this.checkIn).checkOut(this.checkOut).build();
     }
 
 }
