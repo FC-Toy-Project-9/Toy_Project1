@@ -11,7 +11,6 @@ import domain.itinerary.exception.ItineraryException;
 import domain.itinerary.exception.ItineraryNotFoundException;
 import domain.trip.dto.TripDTO;
 import domain.trip.exception.TripFileNotFoundException;
-import domain.trip.service.TripIDGenerator;
 import domain.trip.service.TripService;
 import global.dto.TripCsvDTO;
 import global.util.CsvUtil;
@@ -121,8 +120,14 @@ public class ItineraryService {
 
         List<TripCsvDTO> tripCsvList = fileUtil.readCsvFile(csvFilePath);
         for (TripCsvDTO tripCsv : tripCsvList) {
-            ItineraryDTO itinerary = tripCsv.toItineraryDTO();
-            itineraryList.add(itinerary);
+            Integer id = tripCsv.getItineraryId();
+            if(id != 0){
+                ItineraryDTO itinerary = tripCsv.toItineraryDTO();
+                itineraryList.add(itinerary);
+            } else {
+                //Itinerary 기록하기 API로 연동
+            }
+
         }
         return itineraryList;
 
