@@ -9,11 +9,23 @@ import java.util.Scanner;
 public class InputUtil {
     private static final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * 사용자로부터 문자열 입력을 받는 메서드
+     *
+     * @param prompt 사용자에게 보여질 입력 프롬프트
+     * @return 입력된 문자열
+     */
     public static String getInputString(String prompt) {
         System.out.print(prompt + ": ");
         return scanner.nextLine();
     }
 
+    /**
+     * 사용자로부터 LocalDateTime 입력을 받는 메서드
+     *
+     * @param prompt 사용자에게 보여질 입력 프롬프트
+     * @return 입력된 LocalDateTime 객체
+     */
     public static LocalDateTime getInputLocalDateTime(String prompt) {
         while (true) {
             System.out.print(prompt + " (yyyy-MM-dd HH:mm): ");
