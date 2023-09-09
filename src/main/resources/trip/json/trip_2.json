@@ -1,0 +1,26 @@
+{
+  "trip_id": 2,
+  "trip_name": "가평 여행",
+  "start_date": "2023-09-02",
+  "end_date": "2023-09-03",
+  "itineraries": [
+    {
+      "itinerary_id": 1,
+      "departure_place": "서울",
+      "destination": "가평",
+      "departure_time": "2023-09-02T13:00:00",
+      "arrival_time": "2023-09-02T16:00:00",
+      "check_in": "2023-09-02T16:20:00",
+      "check_out": "2023-09-03T11:00:00"
+    },
+    {
+      "itinerary_id": 2,
+      "departure_place": "가평",
+      "destination": "서울",
+      "departure_time": "2023-09-03T12:00:00",
+      "arrival_time": "2023-09-03T14:00:00",
+      "check_in": "2023-09-03T14:30:00",
+      "check_out": "2023-09-03T21:00:00"
+    }
+  ]
+}
