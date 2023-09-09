@@ -8,6 +8,7 @@ import domain.trip.exception.TripFileNotFoundException;
 import global.dto.TripCsvDTO;
 import global.util.CsvUtil;
 import global.util.FileUtil;
+import global.util.InputUtil;
 import global.util.JsonUtil;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,9 +19,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +36,11 @@ public class TripService {
         throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
         //사용자로부터 정보 입력받아 TripDto객체 생성
         TripDTO tripDTO = createTrip();
-
         //json파일, csv파일에 저장
         saveTripToJson(tripDTO);
         saveTripToCSV(tripDTO);
+        System.out.println("여행정보가 등록되었습니다.");
     }
-
     /**
      * 사용자로부터 여행정보를 입력받아 TripDTO 객체를 생성하는 메서드
      *
@@ -51,34 +49,16 @@ public class TripService {
     private TripDTO createTrip() throws IOException {
         //여행정보 입력받기
         try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            System.out.print("여행 이름: ");
-            String tripName = br.readLine();
+
+            String tripName = InputUtil.getInputString("여행 이름");
 
             LocalDate startDate, endDate;
 
             while (true) {
-                System.out.print("여행 시작 날짜(yyyy-MM-dd): ");
-                String startDateStr = br.readLine();
-                while (!checkDateFormat(startDateStr)) {
-                    System.out.println("날짜형식이 올바르지 않습니다. 다시 입력해주세요.");
-                    System.out.print("여행 시작 날짜(yyyy-MM-dd): ");
-                    startDateStr = br.readLine();
-                }
-
-                System.out.print("여행 종료 날짜(yyyy-MM-dd): ");
-                String endDateStr = br.readLine();
-                while (!checkDateFormat(endDateStr)) {
-                    System.out.println("날짜형식이 올바르지 않습니다. 다시 입력해주세요.");
-                    System.out.print("여행 종료 날짜(yyyy-MM-dd): ");
-                    endDateStr = br.readLine();
-                }
-
-                //String->LocalDate
-                startDate = LocalDate.parse(startDateStr, DateTimeFormatter.ISO_DATE);
-                endDate = LocalDate.parse(endDateStr, DateTimeFormatter.ISO_DATE);
-
+                startDate = InputUtil.getInputLocalDate("여행 시작 날짜");
+                endDate = InputUtil.getInputLocalDate("여행 종료 날짜");
                 if (!checkDateScope(startDate, endDate)) {
-                    System.out.println("시작날짜가 종료날짜보다 작아야 합니다. 다시 입력해주세요.");
+                    System.out.println("시작날짜가 종료날짜보다 빨라야 합니다. 다시 입력해주세요.");
                 } else {
                     break;
                 }
@@ -129,24 +109,6 @@ public class TripService {
         List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
         tripCsvDTOList.add(tripCsvDTO);
         CsvUtil.toCsv(tripCsvDTOList, csvFilePath);
-    }
-
-
-    /**
-     * 날짜 유효성 검증하는 메서드
-     *
-     * @param checkDate 검증이 필요한 날짜 문자열
-     * @return 날짜가 정해진 형식과 다르거나, 불가능한 숫자가 들어간 경우 false, 올바른 날짜인 경우 true
-     */
-    private boolean checkDateFormat(String checkDate) {
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            dateFormat.setLenient(false);//허술하게 체크하지 않겠다
-            dateFormat.parse(checkDate); //오류 발생 -> 올바르지 않은 날짜
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**
