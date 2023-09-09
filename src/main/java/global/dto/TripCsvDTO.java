@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * CSV에서 여행 기록을 입출력 하기 위한 DTO 클래스
+ */
 @Getter
 @NoArgsConstructor
 public class TripCsvDTO {
@@ -64,6 +67,21 @@ public class TripCsvDTO {
     @CsvDate("yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime checkOut;
 
+    /**
+     * Builder 기능이 추가된 TripCsvDTO 클래스 생성자 메서드
+     *
+     * @param tripId        행 ID
+     * @param tripName      여행 이름
+     * @param startDate     여행 시작일
+     * @param endDate       여행 종료일
+     * @param itineraryId   여정 ID
+     * @param departure     여정 출발지
+     * @param destination   여정 도착지
+     * @param departureTime 여정 출발시간
+     * @param arrivalTime   여정 도착시간
+     * @param checkIn       숙박 체크인
+     * @param checkOut      숙박 체크아웃
+     */
     @Builder
     public TripCsvDTO(int tripId, String tripName, LocalDate startDate, LocalDate endDate,
         int itineraryId, String departure, String destination, LocalDateTime departureTime,

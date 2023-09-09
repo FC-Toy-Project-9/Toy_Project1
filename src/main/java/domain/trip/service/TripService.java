@@ -4,8 +4,8 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import domain.itinerary.dto.ItineraryDTO;
 import domain.trip.dto.TripDTO;
-import domain.trip.exception.TripFileNotFoundException;
 import global.dto.TripCsvDTO;
+import global.exception.TripFileNotFoundException;
 import global.util.CsvUtil;
 import global.util.FileUtil;
 import global.util.InputUtil;
@@ -64,7 +64,8 @@ public class TripService {
         //빈 ItineraryDTO LIST 객체를 생성한다.
         List<ItineraryDTO> itineraryDTOList = new ArrayList<>();
         //여행 정보를 담은 TripDto 객체를 만들어 반환한다.
-        return TripDTO.builder().id(tripId).name(tripName).startDate(startDate).endDate(endDate).itineraries(itineraryDTOList).build();
+        return TripDTO.builder().id(tripId).name(tripName).startDate(startDate).endDate(endDate)
+            .itineraries(itineraryDTOList).build();
     }
 
     /**
@@ -93,9 +94,8 @@ public class TripService {
         String csvFilePath = CSVPATH + "/trip_" + tripDTO.getId() + ".csv";
         //빈 TripCsvDTO List 객체를 만든 후, 여행 정보를 담은 TripDTO 객체의 내용을 CSV파일에 저장한다.
         List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
-        tripCsvDTOList.add(
-            TripCsvDTO.builder().tripId(tripDTO.getId()).tripName(tripDTO.getName()).startDate(
-                tripDTO.getStartDate()).endDate(tripDTO.getEndDate()).build());
+        tripCsvDTOList.add(TripCsvDTO.builder().tripId(tripDTO.getId()).tripName(tripDTO.getName())
+            .startDate(tripDTO.getStartDate()).endDate(tripDTO.getEndDate()).build());
         CsvUtil.toCsv(tripCsvDTOList, csvFilePath);
     }
 
@@ -116,16 +116,19 @@ public class TripService {
     }
 
     /**
-     * json 에서 전체 여행 기록을 조회 하는 메서드
+     * JSON 파일에서 전체 여행 기록을 조회하는 메서드
      *
-     * @return src/main/resources/trip/json Directory 내 json 에서 읽어온 TripDTO List 객체
+     * @return src/main/resources/trip/json 폴더 내 JSON 파일에서 읽어온 TripDTO 리스트
      */
     public List<TripDTO> getTripListFromJson() {
         List<TripDTO> tripList = new ArrayList<>();
+        // 경로에 있는 모든 파일을 가져와 File 배열에 저장한다.
         File[] files = new File(JSONPATH).listFiles();
+        // 파일이 없는 경우 TripFileNotFoundException을 던진다.
         if (files == null) {
             throw new TripFileNotFoundException();
         }
+        // 파일을 읽는 중 파일이 아니거나 읽을 수 없는 파일은 읽지 않고 다음 파일을 읽는다.
         for (File file : files) {
             if (!file.isFile() || !file.canRead()) {
                 continue;
@@ -136,20 +139,20 @@ public class TripService {
     }
 
     /**
-     * json 에서 특정 여행 기록을 조회 하는 메서드
+     * JSON 파일에서 특정 여행 기록을 조회하는 메서드
      *
-     * @param id 조회할 특정 여행 기록 trip_id 값
-     * @return src/main/resources/trip/json Directory 내 여행 기록 id에 해당 하는 json 에서 읽어온 TripDTO 객체
+     * @param id 조회할 특정 여행 기록 ID 값
+     * @return src/main/resources/trip/json 경로 내 여행 기록 ID에 해당 하는 JSON 파일에서 읽어온 TripDTO 객체 객체
      */
     public TripDTO getTripFromJson(int id) {
         return fileUtil.readJsonFile(JSONPATH + "/trip_" + id + ".json", TripDTO.class);
     }
 
     /**
-     * 특정 여행 기록 json 을 삭제 하는 메서드
+     * 특정 여행 기록 JSON 파일을 삭제 하는 메서드
      *
      * @param id 삭제할 특정 여행 기록 trip_id 값
-     * @return src/main/resources/trip/json Directory 내 여행 기록 id에 해당 하는 json 삭제 성공 여부(삭제 성공: true,
+     * @return src/main/resources/trip/json 경로에서 파라미터로 받은 여행 기록 ID에 해당하는 JSON 파일 삭제 결과(삭제 성공: true,
      * 삭제 실패: false)
      */
     public boolean deleteTripFromJson(int id) throws IOException {
@@ -164,16 +167,21 @@ public class TripService {
      */
     public List<TripDTO> getTripListFromCsv() {
         List<TripDTO> tripList = new ArrayList<>();
+        // 경로에 있는 모든 파일을 가져와 File 배열에 저장한다.
         File[] files = new File(CSVPATH).listFiles();
+        // 파일이 없는 경우 TripFileNotFoundException을 던진다.
         if (files == null) {
             throw new TripFileNotFoundException();
         }
+        // 파일을 읽는 중 파일이 아니거나 읽을 수 없는 파일은 읽지 않고 다음 파일을 읽는다.
         for (File file : files) {
             if (!file.isFile() || !file.canRead()) {
                 continue;
             }
             List<TripCsvDTO> csv = fileUtil.readCsvFile(CSVPATH + "/" + file.getName());
+            // CSV 파일에서 읽어온 여정 기록 리스트를 ItineraryDTO 리스트로 변환한다.
             List<ItineraryDTO> itineraries = getItineraries(csv);
+            // CSV 파일에서 읽어온 여행 기록과 여정 기록을 TripDTO 리스트에 저장한다.
             tripList.add(TripDTO.builder().id(csv.get(0).getTripId()).name(csv.get(0).getTripName())
                 .startDate(csv.get(0).getStartDate()).endDate(csv.get(0).getEndDate())
                 .itineraries(itineraries).build());
@@ -182,24 +190,26 @@ public class TripService {
     }
 
     /**
-     * csv 에서 특정 여행 기록을 조회 하는 메서드
+     * CSV 파일에서 특정 여행 기록을 조회 하는 메서드
      *
      * @param id 조회할 특정 여행 기록 trip_id 값
-     * @return src/main/resources/trip/csv Directory 내 여행 기록 id에 해당 하는 csv 에서 읽어온 TripDTO 객체
+     * @return src/main/resources/trip/csv 경로 내 여행 기록 ID에 해당 하는 CSV 파일에서 읽어온 TripDTO 객체
      */
     public TripDTO getTripFromCsv(int id) {
         List<TripCsvDTO> csv = fileUtil.readCsvFile(CSVPATH + "/trip_" + id + ".csv");
+        // CSV 파일에서 읽어온 여정 기록 리스트를 ItineraryDTO 리스트로 변환한다.
         List<ItineraryDTO> itineraries = getItineraries(csv);
+        // CSV 파일에서 읽어온 여행 기록과 여정 기록을 TripDTO 객체에 저장한다.
         return TripDTO.builder().id(csv.get(0).getTripId()).name(csv.get(0).getTripName())
             .startDate(csv.get(0).getStartDate()).endDate(csv.get(0).getEndDate())
             .itineraries(itineraries).build();
     }
 
     /**
-     * 특정 여행 기록 csv 을 삭제 하는 메서드
+     * 특정 여행 기록 CSV 파일을 삭제 하는 메서드
      *
      * @param id 삭제할 특정 여행 기록 trip_id 값
-     * @return src/main/resources/trip/csv Directory 내 여행 기록 id에 해당 하는 csv 삭제 성공 여부(삭제 성공: true, 삭제
+     * @return src/main/resources/trip/csv 경로에서 파라미터로 받은 여행 기록 ID에 해당하는 CSV 파일 삭제 결과(삭제 성공: true, 삭제
      * 실패: false)
      */
     public boolean deleteTripFromCsv(int id) throws IOException {
@@ -210,7 +220,7 @@ public class TripService {
     /**
      * TripCsvDTO 에서 Itinerary 리스트를 추출하는 메서드
      *
-     * @param csv
+     * @param csv CSV 파일에서 읽어온 TripCsvDTO 리스트
      * @return TripCsvDTO 에서 추출한 Itinerary 리스트
      */
     private List<ItineraryDTO> getItineraries(List<TripCsvDTO> csv) {
