@@ -1,7 +1,6 @@
 package global.util;
 
 import com.opencsv.CSVWriter;
-import com.opencsv.ICSVWriter;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvToBean;
@@ -41,10 +40,10 @@ public class CsvUtil {
 
         CSVWriter writer = new CSVWriter(new FileWriter(filePath));
 
-        // 클래스의 필드 배열을 가져옵니다.
+        // 필드 선언되어 있는 어노테이션의 속성값을 가져오기 위해서 객체로 부터 필드를 가져온다
         Field[] fields = objects.get(0).getClass().getDeclaredFields();
 
-        // 필드를 @CsvBindByPosition의 position 값으로 정렬합니다.
+        // 필드를 @CsvBindByPosition의 position 값으로 정렬한다
         List<Field> sortedFields =
             Arrays.stream(fields)
                   .filter(field -> field.isAnnotationPresent(CsvBindByPosition.class))
@@ -52,23 +51,22 @@ public class CsvUtil {
                       f -> f.getAnnotation(CsvBindByPosition.class).position()))
                   .collect(Collectors.toList());
 
-        // 정렬된 필드를 기반으로 헤더를 생성합니다.
+        // 정렬된 필드의 어노테이션의 속성 값을 기준으로 CSV header 값을 선언한다
         String[] header = sortedFields.stream()
                                       .map(field -> field.getAnnotation(CsvBindByName.class)
                                                          .column())
                                       .toArray(String[]::new);
         // StatefulBeanToCsv 설정
         StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer)
-            .withApplyQuotesToAll(false)
+            .withApplyQuotesToAll(false) // ""을 포함하지 않고 저장
             .build();
 
-        // header 저장
+        // CSV header 저장
         writer.writeNext(header,false);
 
-        // body 저장
+        // CSV body 저장
         beanToCsv.write(objects);
 
-        // 파일 닫기
         writer.close();
     }
 
@@ -84,7 +82,7 @@ public class CsvUtil {
         CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(reader)
             .withType(classOfT)
             .withIgnoreLeadingWhiteSpace(true) // 헤더 및 데이터에서 앞쪽의 공백 문자를 무시하도록 설정
-            .withSkipLines(1)
+            .withSkipLines(1) // 첫줄 헤더는 스킵하고 데이터를 읽는다.
             .build();
 
         return csvToBean.parse();
