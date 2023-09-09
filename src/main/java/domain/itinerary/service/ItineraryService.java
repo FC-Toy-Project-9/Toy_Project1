@@ -18,7 +18,6 @@ import global.util.FileUtil;
 import global.util.InputUtil;
 import global.util.JsonUtil;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,26 +45,28 @@ public class ItineraryService {
         throws ItineraryException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
         TripDTO trip = tripService.getTripFromJson(tripId);
         List<ItineraryDTO> itineraryList = new ArrayList<>();
-
         String jsonFilePath = JSONPATH + "/trip_" + tripId + ".json";
-
         if (!trip.getItineraries().isEmpty()) {
             File file = new File(jsonFilePath);
+            // 파일이 없는 경우 TripFileNotFoundException을 던진다.
             if (!file.isFile() || !file.canRead()) {
                 throw new TripFileNotFoundException();
             }
             try (FileReader reader = new FileReader(file)) {
+                // Json 파일을 읽어와 Itinerary 정보들을 파싱한다.
                 JsonElement element = JsonParser.parseReader(reader);
                 JsonObject tripObj = element.getAsJsonObject();
                 JsonArray itineraryArr = tripObj.getAsJsonArray("itineraries");
+                // 파싱된 Itinerary 정보들을 ItineraryDTO Array로 역질렬화한다.
                 ItineraryDTO[] array = jsonUtil.fromJson(itineraryArr.toString(),
                     ItineraryDTO[].class);
+                // ItineraryDTO Array를 List로 변환한다.
                 itineraryList = Arrays.asList(array);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            //Itinerary 기록하기 API로 연동
+            // Itinerary 정보가 없을경우 Itinerary 기록하기 API로 연동된다.
             recordItinerary(tripId);
         }
         return itineraryList;
@@ -77,26 +78,24 @@ public class ItineraryService {
      * @param tripId      조회할 특정 여행 tripId
      * @param itineraryId 특정 여행의 itineraryId
      * @return 삭제 성공 여부 (삭제 성공: true, 삭제 실패: false)
-     * @throws ItineraryNotFoundException Itinerary를 찾을 수 없을 때 발생
      */
     public boolean deleteItineraryFromJson(int tripId, int itineraryId)
         throws ItineraryNotFoundException {
         TripDTO trip = tripService.getTripFromJson(tripId);
-
         String jsonFilePath = JSONPATH + "/trip_" + tripId + ".json";
-
         boolean found = false;
-
+        // 해당 Trip의 ItineraryDTO List에서 삭제할 itineraryId와 같은 객체를 찾아 삭제한다.
         for (int i = 0; i < trip.getItineraries().size(); i++) {
             if (trip.getItineraries().get(i).getId() == itineraryId) {
                 trip.getItineraries().remove(i);
                 found = true;
             }
         }
+        // 삭제한 경험이 없다면, ItineraryNotFoundException 예외처리를 해준다.
         if (!found) {
             throw new ItineraryNotFoundException();
         }
-
+        // 삭제한 뒤 새로운 객체를 Json으로 직렬화하여 파일에 덮어씌운다.
         try (FileWriter file = new FileWriter(jsonFilePath)) {
             String newTrip = jsonUtil.toJson(trip);
             file.write(newTrip);
@@ -112,26 +111,25 @@ public class ItineraryService {
      *
      * @param tripId 조회할 특정 여행 tripId
      * @return 여행 기록 id에 해당하는 csv에서 읽어온 itinerary 정보 리스트
-     * @throws FileNotFoundException CSV 파일을 찾을 수 없을 때 발생
      */
-    public List<ItineraryDTO> getItineraryListFromCSV(int tripId) throws FileNotFoundException {
+    public List<ItineraryDTO> getItineraryListFromCSV(int tripId)
+        throws IOException, ItineraryException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
         List<ItineraryDTO> itineraryList = new ArrayList<>();
-
         String csvFilePath = CSVPATH + "/trip_" + tripId + ".csv";
-
+        // CSV 파일 경로를 따라 tripCsvDTO를 정보를 List로 받아온다.
         List<TripCsvDTO> tripCsvList = fileUtil.readCsvFile(csvFilePath);
         for (TripCsvDTO tripCsv : tripCsvList) {
             Integer id = tripCsv.getItineraryId();
+            // ItineraryId가 null이 아닐 경우 itineraryList에 정보를 담는다.
             if (id != 0) {
                 ItineraryDTO itinerary = tripCsv.toItineraryDTO();
                 itineraryList.add(itinerary);
             } else {
-                //Itinerary 기록하기 API로 연동
+                // Itinerary 정보가 없을경우 Itinerary 기록하기 API로 연동된다.
+                recordItinerary(tripId);
             }
-
         }
         return itineraryList;
-
     }
 
     /**
@@ -140,42 +138,41 @@ public class ItineraryService {
      * @param tripId      조회할 특정 여행 tripId
      * @param itineraryId 특정 여행의 itineraryId
      * @return 삭제 성공 여부 (삭제 성공: true, 삭제 실패: false)
-     * @throws ItineraryNotFoundException Itinerary를 찾을 수 없을 때 발생
      */
     public boolean deleteItineraryFromCSV(int tripId, int itineraryId)
         throws ItineraryNotFoundException {
         String csvFilePath = CSVPATH + "/trip_" + tripId + ".csv";
-
         List<TripCsvDTO> tripCsvList = fileUtil.readCsvFile(csvFilePath);
+        // 삭제시, List의 size변동으로 인해 tripCsvList를 복사해 임시 List를 만든다.
         List<TripCsvDTO> tmpTripCsvList = fileUtil.readCsvFile(csvFilePath);
         List<ItineraryDTO> itineraryList = new ArrayList<>();
-
         boolean found = false;
-
         for (int i = 0; i < tripCsvList.size(); i++) {
             ItineraryDTO itinerary = tripCsvList.get(i).toItineraryDTO();
+            // 삭제할 itineraryId와 값이 동일하면, 임시 List에서 해당 id의 itinerary 정보를 삭제한다.
             if (itinerary.getId() == itineraryId) {
                 found = true;
                 tmpTripCsvList.removeIf(m -> (m.getItineraryId() == itineraryId));
             } else {
+                // 삭제할 itineraryId와 값이 다르므로, 반환할 itineraryList에 itinerary 정보를 담는다.
                 itineraryList.add(itinerary);
             }
         }
-
+        // 삭제한 경험이 없다면, ItineraryNotFoundException 예외처리를 해준다.
         if (!found) {
             throw new ItineraryNotFoundException();
         }
-
         try {
             List<TripCsvDTO> updatedCsvList = new ArrayList<>();
-
             for (int i = 0; i < itineraryList.size(); i++) {
+                // 삭제가 반영된 itineraryList와 tmpTripCsvList를 토대로 새로운 tripCsvDTO객체를 만든다.
                 TripCsvDTO tripCsvDTO = itineraryList.get(i)
                     .toTripCsvDTO(tmpTripCsvList.get(i).getTripId(),
                         tmpTripCsvList.get(i).getTripName(), tmpTripCsvList.get(i).getStartDate(),
                         tmpTripCsvList.get(i).getEndDate());
                 updatedCsvList.add(tripCsvDTO);
             }
+            // 삭제가 반영된 tripCsvDTO를 CSV로 직렬화하여 파일에 저장한다.
             CsvUtil.toCsv(updatedCsvList, csvFilePath);
             return true;
         } catch (CsvRequiredFieldEmptyException e) {
