@@ -28,27 +28,28 @@ public class TripService {
     private static final FileUtil fileUtil = new FileUtil();
 
     /**
-     * 메뉴리스트 1.여행정보등록시 호출되는 메서드 사용자로부터 정보 입력받아 json파일 및 csv파일에 저장하는 기능 구현
+     * 사용자로부터 여행 정보 입력받아 json파일 및 CSV파일에 저장하는 메서드
      */
     public void postTrip()
         throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
-        //사용자로부터 정보 입력받아 TripDto객체 생성
+        //사용자로부터 여행 정보 입력받아 TripDto 객체를 생성한다.
         TripDTO tripDTO = createTrip();
-        //json파일, csv파일에 저장
+        //TripDTO를 통해 여행정보를 json파일, CSV파일에 저장한다.
         saveTripToJson(tripDTO);
         saveTripToCSV(tripDTO);
         System.out.println("여행정보가 등록되었습니다.");
     }
 
     /**
-     * 사용자로부터 여행정보를 입력받아 TripDTO 객체를 생성하는 메서드
+     * 사용자로부터 여행 정보를 입력받아 TripDTO 객체를 생성하는 메서드
      *
      * @return 입력받은 정보로 구성된 새 TripDTO 객체
      */
     private TripDTO createTrip() throws IOException {
-        //여행정보 입력받는다
+        //여행 이름을 입력받는다.
         String tripName = InputUtil.getInputString("여행 이름");
         LocalDate startDate, endDate;
+        //여행 시작 날짜와 여행 종료 날짜를 입력받고 유효한 날짜인지 검증한다.
         while (true) {
             startDate = InputUtil.getInputLocalDate("여행 시작 날짜");
             endDate = InputUtil.getInputLocalDate("여행 종료 날짜");
@@ -58,42 +59,39 @@ public class TripService {
                 break;
             }
         }
-        //id 설정
+        //새로운 TripDTO 객체에 고유 식별자 ID값을 부여한다.
         int tripId = TripIDGenerator.getId();
-
-        //빈 여정리스트 객체 생성
+        //빈 ItineraryDTO LIST 객체를 생성한다.
         List<ItineraryDTO> itineraryDTOList = new ArrayList<>();
-
-        // TripDTO 생성
+        //여행 정보를 담은 TripDto 객체를 만들어 반환한다.
         return TripDTO.builder().id(tripId).name(tripName).startDate(startDate).endDate(endDate).itineraries(itineraryDTOList).build();
     }
 
     /**
-     * TripDTO 객체를 Json파일에 저장하는 메서드
+     * TripDTO 객체를 json파일에 저장하는 메서드
      *
-     * @param tripDTO: 저장할 정보를 담은 TripDTO객체
+     * @param tripDTO 여행 정보를 담은 TripDTO 객체
      */
     private void saveTripToJson(TripDTO tripDTO) throws IOException {
-        //TripDTO -> Json으로 변환
+        //TripDTO 객체를 json형식으로 바꿔 문자열로 저장한다.
         String tripJson = JsonUtil.toJson(tripDTO);
-
-        //json파일에 저장
+        //해당 내용을 json파일에 저장한다.
         BufferedWriter bw = new BufferedWriter(
-            new FileWriter(JSONPATH + "/trip_" + tripDTO.getId() + ".json")); //파일열기
-        bw.write(tripJson); //json문자열 파일에 쓰기
-
-        //파일 닫기
+            new FileWriter(JSONPATH + "/trip_" + tripDTO.getId() + ".json"));
+        bw.write(tripJson);
         bw.close();
     }
 
     /**
-     * TripDTO객체를 TripCSVDto로 변환 후 CSV파일에 저장하는 메서드
+     * TripDTO 객체를 TripCSVDTO 객체로 변환 후 CSV파일에 저장하는 메서드
      *
-     * @param tripDTO 여행정보를 담은 TripDTO객체
+     * @param tripDTO 여행 정보를 담은 TripDTO 객체
      */
     private void saveTripToCSV(TripDTO tripDTO)
         throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
+        //새로운 여행 정보를 저장할 CSV파일 경로를 만든다.
         String csvFilePath = CSVPATH + "/trip_" + tripDTO.getId() + ".csv";
+        //빈 TripCsvDTO List 객체를 만든 후, 여행 정보를 담은 TripDTO 객체의 내용을 CSV파일에 저장한다.
         List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
         tripCsvDTOList.add(
             TripCsvDTO.builder().tripId(tripDTO.getId()).tripName(tripDTO.getName()).startDate(
@@ -102,15 +100,15 @@ public class TripService {
     }
 
     /**
-     * 여행 시작 날짜와 종료 날짜의 범위 (시작 날짜 < 종료 날자) 확인하는 메서드
+     * 여행 시작 날짜와 종료 날짜의 범위를 검증하는 메서드
      *
      * @param startDate 여행 시작 날짜
      * @param endDate   여행 종료 날짜
-     * @return 시작 날짜가 종료 날짜보다 작으면 true, 크면 false
+     * @return 시작 날짜가 종료 날짜보다 빠르면 true, 늦으면 false
      */
     private boolean checkDateScope(LocalDate startDate, LocalDate endDate) {
         int compare = startDate.compareTo(endDate);
-        if (compare > 0) { //시작날짜 > 종료날짜
+        if (compare > 0) {
             return false;
         } else {
             return true;
