@@ -103,11 +103,10 @@ public class TripService {
      */
     private void saveTripToCSV(TripDTO tripDTO)
         throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
-        TripCsvDTO tripCsvDTO = new TripCsvDTO(tripDTO.getId(), tripDTO.getName(),
-            tripDTO.getStartDate(), tripDTO.getEndDate());
         String csvFilePath = CSVPATH + "/trip_" + tripDTO.getId() + ".csv";
         List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
-        tripCsvDTOList.add(tripCsvDTO);
+        tripCsvDTOList.add(TripCsvDTO.builder().tripId(tripDTO.getId()).tripName(tripDTO.getName()).startDate(
+            tripDTO.getStartDate()).endDate(tripDTO.getEndDate()).build());
         CsvUtil.toCsv(tripCsvDTOList, csvFilePath);
     }
 
