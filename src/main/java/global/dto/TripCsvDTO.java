@@ -1,13 +1,11 @@
 package global.dto;
 
-import com.google.gson.annotations.SerializedName;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvDate;
 import domain.itinerary.dto.ItineraryDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -83,19 +81,6 @@ public class TripCsvDTO {
         this.checkOut = checkOut;
     }
 
-    public TripCsvDTO(int tripId, String tripName, LocalDate startDate, LocalDate endDate){
-        this.tripId = tripId;
-        this.tripName = tripName;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.itineraryId = -1;
-        this.departure = null;
-        this.destination = null;
-        this.departureTime = null;
-        this.arrivalTime = null;
-        this.checkIn = null;
-        this.checkOut = null;
-    }
     /**
      * TripCsvDTO에서 여정 정보를 ItineraryDTO에 담아 반환하는 메서드
      *
