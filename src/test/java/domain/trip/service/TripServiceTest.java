@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import domain.trip.dto.TripDTO;
-import domain.trip.exception.TripFileNotFoundException;
+import global.exception.TripFileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
