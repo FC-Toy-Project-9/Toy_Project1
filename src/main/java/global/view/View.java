@@ -83,7 +83,8 @@ public class View {
             }
     }
 
-    public void searchItinerariesFromCsv() throws FileNotFoundException {
+    public void searchItinerariesFromCsv()
+        throws IOException, ItineraryException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
         String answer = scanner.next();
         if (answer.equals("y") | answer.equals("Y")) {
             System.out.print("여정을 조회할 여행 ID를 입력해주세요: ");
