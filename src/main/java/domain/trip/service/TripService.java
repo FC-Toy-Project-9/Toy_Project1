@@ -10,12 +10,10 @@ import global.util.CsvUtil;
 import global.util.FileUtil;
 import global.util.InputUtil;
 import global.util.JsonUtil;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,41 +39,33 @@ public class TripService {
         saveTripToCSV(tripDTO);
         System.out.println("여행정보가 등록되었습니다.");
     }
+
     /**
      * 사용자로부터 여행정보를 입력받아 TripDTO 객체를 생성하는 메서드
      *
      * @return 입력받은 정보로 구성된 새 TripDTO 객체
      */
     private TripDTO createTrip() throws IOException {
-        //여행정보 입력받기
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-
-            String tripName = InputUtil.getInputString("여행 이름");
-
-            LocalDate startDate, endDate;
-
-            while (true) {
-                startDate = InputUtil.getInputLocalDate("여행 시작 날짜");
-                endDate = InputUtil.getInputLocalDate("여행 종료 날짜");
-                if (!checkDateScope(startDate, endDate)) {
-                    System.out.println("시작날짜가 종료날짜보다 빨라야 합니다. 다시 입력해주세요.");
-                } else {
-                    break;
-                }
+        //여행정보 입력받는다
+        String tripName = InputUtil.getInputString("여행 이름");
+        LocalDate startDate, endDate;
+        while (true) {
+            startDate = InputUtil.getInputLocalDate("여행 시작 날짜");
+            endDate = InputUtil.getInputLocalDate("여행 종료 날짜");
+            if (!checkDateScope(startDate, endDate)) {
+                System.out.println("시작날짜가 종료날짜보다 빨라야 합니다. 다시 입력해주세요.");
+            } else {
+                break;
             }
-
-            //id 설정
-            int tripId = TripIDGenerator.getId();
-
-            //빈 여정리스트 객체 생성
-            List<ItineraryDTO> itineraryDTOList = new ArrayList<>();
-
-            // TripDTO 생성
-            return new TripDTO(tripId, tripName, startDate, endDate, itineraryDTOList);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return null;
         }
+        //id 설정
+        int tripId = TripIDGenerator.getId();
+
+        //빈 여정리스트 객체 생성
+        List<ItineraryDTO> itineraryDTOList = new ArrayList<>();
+
+        // TripDTO 생성
+        return TripDTO.builder().id(tripId).name(tripName).startDate(startDate).endDate(endDate).itineraries(itineraryDTOList).build();
     }
 
     /**
@@ -105,8 +95,9 @@ public class TripService {
         throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
         String csvFilePath = CSVPATH + "/trip_" + tripDTO.getId() + ".csv";
         List<TripCsvDTO> tripCsvDTOList = new ArrayList<>();
-        tripCsvDTOList.add(TripCsvDTO.builder().tripId(tripDTO.getId()).tripName(tripDTO.getName()).startDate(
-            tripDTO.getStartDate()).endDate(tripDTO.getEndDate()).build());
+        tripCsvDTOList.add(
+            TripCsvDTO.builder().tripId(tripDTO.getId()).tripName(tripDTO.getName()).startDate(
+                tripDTO.getStartDate()).endDate(tripDTO.getEndDate()).build());
         CsvUtil.toCsv(tripCsvDTOList, csvFilePath);
     }
 
