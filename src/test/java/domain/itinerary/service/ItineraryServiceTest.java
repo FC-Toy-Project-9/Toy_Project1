@@ -9,7 +9,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import domain.itinerary.dto.ItineraryDTO;
 import domain.itinerary.exception.ItineraryException;
 import domain.itinerary.exception.ItineraryNotFoundException;
-import domain.trip.exception.TripFileNotFoundException;
+import global.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
 import global.dto.TripCsvDTO;
 import java.io.FileWriter;
@@ -87,7 +87,7 @@ public class ItineraryServiceTest {
             boolean result = itineraryService.deleteItineraryFromJson(999, 1);
             tripService.deleteTripFromJson(999);
 
-            //then
+            // then
             Assertions.assertTrue(result);
         }
     }

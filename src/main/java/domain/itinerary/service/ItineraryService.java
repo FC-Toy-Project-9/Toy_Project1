@@ -10,7 +10,7 @@ import domain.itinerary.dto.ItineraryDTO;
 import domain.itinerary.exception.ItineraryException;
 import domain.itinerary.exception.ItineraryNotFoundException;
 import domain.trip.dto.TripDTO;
-import domain.trip.exception.TripFileNotFoundException;
+import global.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
 import global.dto.TripCsvDTO;
 import global.util.CsvUtil;
