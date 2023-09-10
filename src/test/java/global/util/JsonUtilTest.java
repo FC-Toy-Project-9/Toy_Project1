@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 /**
  * JSON 파싱 유틸 테스트 클래스
@@ -14,12 +15,10 @@ import org.junit.jupiter.api.Test;
  * @since 2023-09-05
  */
 class JsonUtilTest {
-
-
     /**
-     * TC1: 직렬화 했을 경우 문자열의 길이가 0보다 커야 한다.
      * public static String toJson(Object obj): Object -> String
      */
+    @DisplayName("toJsonTC1: 직렬화 했을 경우 문자열의 길이가 0보다 커야 한다.")
     @Test
     void toJsonTC1() {
         TestTrip vacation =
@@ -34,9 +33,9 @@ class JsonUtilTest {
     }
 
     /**
-     * TC2: 직렬화 했을 경우 문자열이 비어있으면 안된다.
      * public static String toJson(Object obj): Object -> String
      */
+    @DisplayName("toJsonTC2: 직렬화 했을 경우 문자열이 비어있으면 안된다.")
     @Test
     void toJsonTC2() {
         TestTrip vacation =
@@ -51,9 +50,9 @@ class JsonUtilTest {
     }
 
     /**
-     * TC3: 직렬화 했을 경우 문자열은 null이면 안된다.
      * public static String toJson(Object obj): Object -> String
      */
+    @DisplayName("toJsonTC3: 직렬화 했을 경우 문자열은 null이면 안된다.")
     @Test
     void toJsonTC3() {
         TestTrip vacation =
@@ -68,9 +67,9 @@ class JsonUtilTest {
     }
 
     /**
-     * TC1: 역직렬화 했을 경우 json 문자열에 있는 trip_id 값과 인스턴스의 tripId 필드의 값이 같아야 한다.
      * public static <T> T fromJson(String json, Class<T> classOfT)
      */
+    @DisplayName("fromJsonTC1: 역직렬화 했을 경우 json 문자열에 있는 trip_id 값과 인스턴스의 tripId 필드의 값이 같아야 한다.")
     @Test
     void fromJsonTC1() {
         String jsonStr = "{\n"
@@ -85,9 +84,9 @@ class JsonUtilTest {
     }
 
     /**
-     * TC2: 역직렬화 했을 경우 json 문자열에 있는 trip_name 값과 인스턴스의 tripName 필드의 값이 같아야 한다.
      * public static <T> T fromJson(String json, Class<T> classOfT)
      */
+    @DisplayName("fromJsonTC2: 역직렬화 했을 경우 json 문자열에 있는 trip_name 값과 인스턴스의 tripName 필드의 값이 같아야 한다.")
     @Test
     void fromJsonTC2() {
         String jsonStr = "{\n"
@@ -101,9 +100,9 @@ class JsonUtilTest {
         Assertions.assertEquals("Family Vacation", testTrip.getTripName());
     }
     /**
-     * TC3: 역직렬화 했을 경우 json 문자열에 있는 start_date 값과 인스턴스의 startDate 필드의 값이 같아야 한다.
      * public static <T> T fromJson(String json, Class<T> classOfT)
      */
+    @DisplayName("fromJsonTC3: 역직렬화 했을 경우 json 문자열에 있는 start_date 값과 인스턴스의 startDate 필드의 값이 같아야 한다.")
     @Test
     void fromJsonTC3() {
         String jsonStr = "{\n"
@@ -117,9 +116,9 @@ class JsonUtilTest {
         Assertions.assertEquals(LocalDate.of(2023,7,15), testTrip.getStartDate());
     }
     /**
-     * TC4: 역직렬화 했을 경우 json 문자열에 있는 end_date 값과 인스턴스의 endDate 필드의 값이 같아야 한다.
      * public static <T> T fromJson(String json, Class<T> classOfT)
      */
+    @DisplayName("fromJsonTC4: 역직렬화 했을 경우 json 문자열에 있는 end_date 값과 인스턴스의 endDate 필드의 값이 같아야 한다.")
     @Test
     void fromJsonTC4() {
         String jsonStr = "{\n"
@@ -134,9 +133,9 @@ class JsonUtilTest {
     }
 
     /**
-     * TC5: 역직렬화 했을 경우 BufferedReader로 읽은 json의 end_date 값과 인스턴스의 endDate 필드의 값이 같아야 한다.
      * public static <T> T fromJson(BufferedReader reader, Class<T> classOfT)
      */
+    @DisplayName("fromJsonTC5: 역직렬화 했을 경우 BufferedReader로 읽은 json의 end_date 값과 인스턴스의 endDate 필드의 값이 같아야 한다.")
     @Test
     void fromJsonTC5() {
         String jsonStr = "{\n"
@@ -152,9 +151,9 @@ class JsonUtilTest {
     }
 
     /**
-     * TC6: LocalDateTime일 경우 'T'가 포함된 문자열을 제대로 파싱하는지 확인.
      * public static <T> T fromJson(BufferedReader reader, Class<T> classOfT)
      */
+    @DisplayName("fromJsonTC6: LocalDateTime일 경우 'T'가 포함된 문자열을 제대로 파싱하는지 확인.")
     @Test
     void fromJsonTC6() {
         String jsonStr = "{\n"
