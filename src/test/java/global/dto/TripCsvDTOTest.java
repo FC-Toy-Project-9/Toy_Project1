@@ -8,6 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+/**
+ * TripCsvDTO 테스트 클래스
+ */
 public class TripCsvDTOTest {
 
     @Nested
