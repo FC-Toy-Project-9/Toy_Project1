@@ -27,7 +27,7 @@ public class Main {
                         //2. 여정등록
                         view.printTrip(tripService.getTripListFromJson());
                         System.out.print("여정을 추가할 여행 ID를 입력하세요: ");
-                        itineraryService.recordItinerary(scanner.nextInt());
+                        itineraryService.postItinerary(scanner.nextInt());
                         break;
                     case 3:
                         //3. 여행 조회 (여행전체조회 -> 특정 여행 및 여정 정보 조회)
