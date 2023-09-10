@@ -10,9 +10,9 @@ import domain.itinerary.dto.ItineraryDTO;
 import domain.itinerary.exception.ItineraryException;
 import domain.itinerary.exception.ItineraryNotFoundException;
 import domain.trip.dto.TripDTO;
-import global.exception.TripFileNotFoundException;
 import domain.trip.service.TripService;
 import global.dto.TripCsvDTO;
+import global.exception.TripFileNotFoundException;
 import global.util.CsvUtil;
 import global.util.FileUtil;
 import global.util.InputUtil;
@@ -126,6 +126,7 @@ public class ItineraryService {
                 itineraryList.add(itinerary);
             } else {
                 // Itinerary 정보가 없을경우 Itinerary 기록하기 API로 연동된다.
+                System.out.println("여정 기록이 없습니다. 여정을 추가해주세요.");
                 postItinerary(tripId);
             }
         }
@@ -189,13 +190,13 @@ public class ItineraryService {
      * 특정 여행의 여정 정보를 입력받아 해당 여행의 json 파일 및 csv 파일에 여정 정보를 업데이트 하는 메서드
      *
      * @param tripId 여행의 ID
-     * @throws ItineraryException                  여정 정보가 올바르지 않을 때 발생하는 예외
-     * @throws CsvRequiredFieldEmptyException     필수 필드 누락 예외 (CSV 라이브러리 사용 시)
-     * @throws CsvDataTypeMismatchException      데이터 타입 불일치 예외 (CSV 라이브러리 사용 시)
-     * @throws IOException                        파일 입출력 예외
+     * @throws ItineraryException             여정 정보가 올바르지 않을 때 발생하는 예외
+     * @throws CsvRequiredFieldEmptyException 필수 필드 누락 예외 (CSV 라이브러리 사용 시)
+     * @throws CsvDataTypeMismatchException   데이터 타입 불일치 예외 (CSV 라이브러리 사용 시)
+     * @throws IOException                    파일 입출력 예외
      */
     public void postItinerary(int tripId)
-            throws ItineraryException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
+        throws ItineraryException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
         // JSON 및 CSV 파일 경로 설정한다.
         String jsonFilePath = JSONPATH + "/trip_" + tripId + ".json";
         String csvFilePath = CSVPATH + "/trip_" + tripId + ".csv";
@@ -209,8 +210,8 @@ public class ItineraryService {
 
             // 도착 날짜, 체크인 날짜, 체크아웃 날짜, 출발 날짜 간의 관계를 검증
             validateItineraryDates(trip.getStartDate(), trip.getEndDate(),
-                    itinerary.getDepartureTime(), itinerary.getArrivalTime(),
-                    itinerary.getCheckIn(), itinerary.getCheckOut());
+                itinerary.getDepartureTime(), itinerary.getArrivalTime(),
+                itinerary.getCheckIn(), itinerary.getCheckOut());
 
             // TripDTO 객체의 itineraries 리스트에 새로운 여정 정보 추가한다.
             addItineraryToTrip(trip, itinerary);
@@ -234,18 +235,18 @@ public class ItineraryService {
     /**
      * 날짜 관계를 검증하는 메서드
      *
-     * @param startDate          여행의 시작 날짜
-     * @param endDate            여행의 종료 날짜
-     * @param departureDateTime  출발 일시
-     * @param arrivalDateTime    도착 일시
-     * @param checkInDateTime    체크인 일시
-     * @param checkOutDateTime   체크아웃 일시
+     * @param startDate         여행의 시작 날짜
+     * @param endDate           여행의 종료 날짜
+     * @param departureDateTime 출발 일시
+     * @param arrivalDateTime   도착 일시
+     * @param checkInDateTime   체크인 일시
+     * @param checkOutDateTime  체크아웃 일시
      * @throws ItineraryException 여행 일정 관련 예외 발생 시
      */
     private static void validateItineraryDates(LocalDate startDate, LocalDate endDate,
-                                               LocalDateTime departureDateTime, LocalDateTime arrivalDateTime,
-                                               LocalDateTime checkInDateTime, LocalDateTime checkOutDateTime)
-            throws ItineraryException {
+        LocalDateTime departureDateTime, LocalDateTime arrivalDateTime,
+        LocalDateTime checkInDateTime, LocalDateTime checkOutDateTime)
+        throws ItineraryException {
         // 출발 시간이 도착 시간 이전인지 검증한다.
         if (arrivalDateTime.isBefore(departureDateTime)) {
             throw new ItineraryException("출발 시간은 도착 시간 전으로 입력해주세요.");
@@ -296,7 +297,7 @@ public class ItineraryService {
 
         // 새로운 ItineraryDTO 객체 생성하여 반환한다.
         return new ItineraryDTO(previousItineraryId + 1, departurePlace, destination,
-                departureTime, arrivalTime, checkIn, checkOut);
+            departureTime, arrivalTime, checkIn, checkOut);
     }
 
     /**
@@ -312,8 +313,8 @@ public class ItineraryService {
     /**
      * JSON 파일에 업데이트된 여정 정보를 저장하는 메서드
      *
-     * @param filePath     저장할 JSON 파일 경로
-     * @param jsonContent  저장할 JSON 형식의 문자열
+     * @param filePath    저장할 JSON 파일 경로
+     * @param jsonContent 저장할 JSON 형식의 문자열
      */
     private static void saveJsonToFile(String filePath, String jsonContent) {
         try (FileWriter fileWriter = new FileWriter(filePath);) {
@@ -326,14 +327,14 @@ public class ItineraryService {
     /**
      * CSV 파일에 업데이트된 여정 정보를 저장하는 메서드
      *
-     * @param csvFilePath  CSV 파일 경로
-     * @param itinerary    추가할 ItineraryDTO 객체
-     * @throws IOException                  파일 입출력 예외 발생 시
+     * @param csvFilePath CSV 파일 경로
+     * @param itinerary   추가할 ItineraryDTO 객체
+     * @throws IOException                    파일 입출력 예외 발생 시
      * @throws CsvRequiredFieldEmptyException 필수 필드 누락 예외 발생 시 (CSV 라이브러리 사용 시)
-     * @throws CsvDataTypeMismatchException  데이터 타입 불일치 예외 발생 시 (CSV 라이브러리 사용 시)
+     * @throws CsvDataTypeMismatchException   데이터 타입 불일치 예외 발생 시 (CSV 라이브러리 사용 시)
      */
     private void saveItineraryToCSV(String csvFilePath, ItineraryDTO itinerary)
-            throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
+        throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
         // 기존 CSV 파일 내용을 읽는다.
         List<TripCsvDTO> trip = fileUtil.readCsvFile(csvFilePath);
 
@@ -347,6 +348,9 @@ public class ItineraryService {
         TripCsvDTO tripCsvDTO = itinerary.toTripCsvDTO(tripId, tripName, startDate, endDate);
 
         // 여정 정보를 기존 CSV 파일에 추가한다.
+        if (trip.get(0).getItineraryId() == 0) {
+            trip.remove(0);
+        }
         trip.add(tripCsvDTO);
 
         // CSV 파일로 저장한다.
