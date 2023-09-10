@@ -32,14 +32,21 @@ public class InputUtil {
      */
     public static LocalDateTime getInputLocalDateTime(String prompt) {
         while (true) {
+            // 사용자에게 입력 프롬프트를 표시하고 형식 예시를 제공
             System.out.print(prompt + " (yyyy-MM-dd HH:mm): ");
+
+            // 사용자 입력을 문자열로 받음
             String input = scanner.nextLine();
+
+            // 입력된 문자열을 지정한 형식("yyyy-MM-dd HH:mm")으로 변환하기 위한 DateTimeFormatter 생성
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
             try {
+                // 입력된 문자열을 LocalDateTime으로 변환
                 LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
-                return dateTime;
+                return dateTime; // 변환된 LocalDateTime 반환
             } catch (DateTimeParseException e) {
+                // 형식에 맞지 않는 입력인 경우 사용자에게 오류 메시지 표시
                 System.out.println("유효한 날짜 및 시간 형식이 아닙니다. 다시 입력해주세요.");
             }
         }
