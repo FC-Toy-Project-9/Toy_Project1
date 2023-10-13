@@ -38,12 +38,12 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: "**/build/test-result/test/test-*.xml"
+        files: "**/build/test-result/test/TEST-*.xml"
         github_token: ${{ github.token }}
         
     - name: Publish failure of unit test
       uses: mikepenz/action-junit-report@v3
       if: always()
       with:
-        report_paths: '**/build/test-results/test/test-*.xml'
+        report_paths: '**/build/test-results/test/TEST-*.xml'
         github_token: ${{ github.token }}
