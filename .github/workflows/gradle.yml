@@ -38,7 +38,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: "**/build/test-result/test/TEST-*.xml"
+        files: "**/build/test-results/test/TEST-*.xml"
         github_token: ${{ github.token }}
         
     - name: Publish failure of unit test
